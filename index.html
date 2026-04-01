@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>June's File Upload Portal</title>
+
+  <!-- Favicons -->
+  <link rel="icon" type="image/png" href="https://cdn.meson.one/f/up.meson.one/favicon-96x96.png" sizes="96x96" />
+  <link rel="icon" type="image/svg+xml" href="https://cdn.meson.one/f/up.meson.one/favicon.svg" />
+  <link rel="shortcut icon" href="https://cdn.meson.one/f/up.meson.one/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.meson.one/f/up.meson.one/apple-touch-icon.png" />
+  <link rel="manifest" href="https://cdn.meson.one/f/up.meson.one/site.webmanifest" />
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"/>
+  <!-- Material Symbols -->
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+  <!-- Ripple (Material) via inline JS -->
+
+  <style>
+    :root {
+      --bg:           #0a0f1e;
+      --surface:      #111827;
+      --surface2:     #1a2236;
+      --border:       rgba(255,255,255,0.07);
+      --accent:       #00d4aa;
+      --accent2:      #4f8ef7;
+      --accent3:      #f97316;
+      --text:         #e8edf5;
+      --text-muted:   #7a8ba3;
+      --shadow:       0 8px 32px rgba(0,0,0,0.45);
+      --radius:       18px;
+      --card-h:       160px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── Animated mesh background ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 10% 20%, rgba(79,142,247,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 90% 80%, rgba(0,212,170,0.10) 0%, transparent 55%),
+        radial-gradient(ellipse 50% 40% at 50% 50%, rgba(249,115,22,0.05) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    /* ── Floating particles ── */
+    .particles { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0;
+      animation: float-up linear infinite;
+    }
+    @keyframes float-up {
+      0%   { transform: translateY(110vh) scale(0); opacity: 0; }
+      10%  { opacity: 0.6; }
+      90%  { opacity: 0.3; }
+      100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+    }
+
+    /* ── Layout ── */
+    .wrapper {
+      position: relative; z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+
+    /* ── Header ── */
+    header {
+      padding: 56px 0 48px;
+      text-align: center;
+      position: relative;
+    }
+    .header-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 11px; font-weight: 600; letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: rgba(0,212,170,0.10);
+      border: 1px solid rgba(0,212,170,0.25);
+      padding: 6px 16px; border-radius: 100px;
+      margin-bottom: 24px;
+      animation: fade-down 0.6s ease both;
+    }
+    .header-eyebrow .material-symbols-rounded { font-size: 14px; }
+
+    h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      animation: fade-down 0.7s 0.1s ease both;
+    }
+    h1 em {
+      font-style: italic;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle {
+      margin-top: 16px;
+      font-size: 1rem; color: var(--text-muted); font-weight: 400;
+      animation: fade-down 0.7s 0.2s ease both;
+    }
+
+    /* ── Search / Filter ── */
+    .search-wrap {
+      display: flex; justify-content: center;
+      margin: 36px 0 48px;
+      animation: fade-down 0.7s 0.3s ease both;
+    }
+    .search-box {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 100px; padding: 10px 20px;
+      width: 100%; max-width: 420px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .search-box:focus-within {
+      border-color: rgba(0,212,170,0.5);
+      box-shadow: 0 0 0 3px rgba(0,212,170,0.10);
+    }
+    .search-box .material-symbols-rounded { color: var(--text-muted); font-size: 20px; }
+    .search-box input {
+      flex: 1; background: none; border: none; outline: none;
+      font-family: inherit; font-size: 0.9rem; color: var(--text);
+    }
+    .search-box input::placeholder { color: var(--text-muted); }
+
+    /* ── Stats bar ── */
+    .stats {
+      display: flex; justify-content: center; gap: 40px;
+      margin-bottom: 48px;
+      animation: fade-down 0.7s 0.35s ease both;
+    }
+    .stat { text-align: center; }
+    .stat-num { font-size: 1.6rem; font-weight: 700; color: var(--accent); }
+    .stat-lbl { font-size: 0.75rem; color: var(--text-muted); letter-spacing: 0.05em; text-transform: uppercase; margin-top: 2px; }
+
+    /* ── Grid ── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    /* ── Card ── */
+    .card {
+      position: relative;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px 24px 22px;
+      text-decoration: none;
+      color: inherit;
+      display: flex; flex-direction: column; gap: 14px;
+      overflow: hidden;
+      transition: transform 0.25s cubic-bezier(.34,1.56,.64,1),
+                  border-color 0.25s, box-shadow 0.25s;
+      animation: card-in 0.6s ease both;
+      cursor: pointer;
+    }
+    .card:hover {
+      transform: translateY(-6px) scale(1.01);
+      border-color: var(--card-accent, var(--accent));
+      box-shadow: 0 20px 48px rgba(0,0,0,0.5),
+                  0 0 0 1px var(--card-accent, var(--accent)),
+                  inset 0 1px 0 rgba(255,255,255,0.06);
+    }
+
+    /* Glow on hover */
+    .card::before {
+      content: '';
+      position: absolute; inset: 0; border-radius: inherit;
+      background: radial-gradient(circle at var(--mx,50%) var(--my,50%),
+        rgba(255,255,255,0.04) 0%, transparent 65%);
+      transition: opacity 0.3s;
+      opacity: 0; pointer-events: none;
+    }
+    .card:hover::before { opacity: 1; }
+
+    /* Shimmer line top */
+    .card::after {
+      content: '';
+      position: absolute; top: 0; left: 10%; right: 10%; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--card-accent, var(--accent)), transparent);
+      opacity: 0;
+      transition: opacity 0.25s;
+    }
+    .card:hover::after { opacity: 0.8; }
+
+    /* Placeholder card */
+    .card.placeholder {
+      border-style: dashed;
+      opacity: 0.45;
+      pointer-events: none;
+      justify-content: center; align-items: center;
+      min-height: 140px;
+    }
+    .card.placeholder .placeholder-inner {
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    .card-icon-wrap {
+      width: 48px; height: 48px;
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--card-icon-bg, rgba(0,212,170,0.12));
+      flex-shrink: 0;
+    }
+    .card-icon-wrap .material-symbols-rounded {
+      font-size: 26px;
+      color: var(--card-accent, var(--accent));
+      font-variation-settings: 'FILL' 1;
+    }
+
+    .card-meta { flex: 1; }
+    .card-index {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--card-accent, var(--accent));
+      opacity: 0.7; margin-bottom: 4px;
+    }
+    .card-title {
+      font-size: 1.05rem; font-weight: 600; color: var(--text);
+      margin-bottom: 4px; line-height: 1.3;
+    }
+    .card-domain {
+      font-size: 0.78rem; color: var(--text-muted);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+
+    .card-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      border-top: 1px solid var(--border);
+      padding-top: 14px; margin-top: 4px;
+    }
+    .card-tag {
+      font-size: 10px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; padding: 3px 10px;
+      border-radius: 100px;
+      background: var(--card-tag-bg, rgba(0,212,170,0.12));
+      color: var(--card-accent, var(--accent));
+    }
+    .card-arrow .material-symbols-rounded {
+      font-size: 18px; color: var(--text-muted);
+      transition: color 0.2s, transform 0.2s;
+    }
+    .card:hover .card-arrow .material-symbols-rounded {
+      color: var(--card-accent, var(--accent));
+      transform: translate(3px, -3px);
+    }
+
+    /* ── Status badge ── */
+    .status-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 10px; font-weight: 600; letter-spacing: 0.08em;
+      text-transform: uppercase; padding: 3px 9px;
+      border-radius: 100px;
+      transition: background 0.4s, color 0.4s;
+    }
+    .status-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      flex-shrink: 0;
+      transition: background 0.4s;
+    }
+    .status-badge.checking {
+      background: rgba(122,139,163,0.15);
+      color: #7a8ba3;
+    }
+    .status-badge.checking .status-dot {
+      background: #7a8ba3;
+      animation: pulse-dot 1.2s ease-in-out infinite;
+    }
+    .status-badge.online {
+      background: rgba(52,211,153,0.15);
+      color: #34d399;
+    }
+    .status-badge.online .status-dot {
+      background: #34d399;
+      box-shadow: 0 0 6px #34d399;
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+    .status-badge.offline {
+      background: rgba(244,63,94,0.13);
+      color: #f43f5e;
+    }
+    .status-badge.offline .status-dot {
+      background: #f43f5e;
+    }
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.5; transform: scale(0.7); }
+    }
+
+    /* Ripple */
+    .ripple {
+      position: absolute; border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+      transform: scale(0);
+      animation: ripple-anim 0.6s linear;
+      pointer-events: none;
+    }
+    @keyframes ripple-anim {
+      to { transform: scale(4); opacity: 0; }
+    }
+
+    /* ── Animations ── */
+    @keyframes fade-down {
+      from { opacity: 0; transform: translateY(-18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes card-in {
+      from { opacity: 0; transform: translateY(30px) scale(0.96); }
+      to   { opacity: 1; transform: translateY(0)   scale(1); }
+    }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center; margin-top: 64px;
+      font-size: 0.78rem; color: var(--text-muted);
+      letter-spacing: 0.05em; position: relative; z-index: 1;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--surface2); border-radius: 3px; }
+
+    /* ── Hide on filter ── */
+    .card.hidden { display: none; }
+
+    @media (max-width: 600px) {
+      .stats { gap: 24px; }
+      .stat-num { font-size: 1.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="particles" id="particles"></div>
+
+<div class="wrapper">
+  <header>
+    <div class="header-eyebrow">
+      <span class="material-symbols-rounded">cloud_upload</span>
+      Secure File Transfer
+    </div>
+    <h1>Upload <em>Portal</em></h1>
+    <p class="subtitle">Select a destination to securely upload your files</p>
+  </header>
+
+  <div class="search-wrap">
+    <div class="search-box">
+      <span class="material-symbols-rounded">search</span>
+      <input type="text" id="search" placeholder="Filter upload destinations…" autocomplete="off"/>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-num" id="stat-total">12</div>
+      <div class="stat-lbl">Destinations</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" id="stat-visible">12</div>
+      <div class="stat-lbl">Visible</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" id="stat-online"><span style="font-size:1rem;color:#7a8ba3">—</span></div>
+      <div class="stat-lbl">Online</div>
+    </div>
+  </div>
+
+  <div class="grid" id="grid">
+    <!-- Cards injected by JS -->
+  </div>
+</div>
+
+<footer>
+  &copy; <span id="yr"></span> &mdash; Secure Upload Portal &middot; All transfers encrypted
+</footer>
+
+<script>
+  // ── Data ──
+  const links = [
+    { title: "HMS Upload",    domain: "hms.meson.in",   url: "https://hms.meson.in/s/2XTw4kT6BGPcD8C",       icon: "local_hospital",  accent: "#00d4aa", tag: "Medical School" },
+    { title: "MGH Upload",    domain: "mgh.meson.in",   url: "https://mgh.meson.in/s/fwscJR4itR6d2mt",       icon: "medical_services",accent: "#4f8ef7", tag: "General Hostpial"  },
+    { title: "NUS Upload",    domain: "nus.meson.in",   url: "https://nus.meson.in/s/J6dxq24CHDXGJ6s",       icon: "school",          accent: "#f97316", tag: "Academic Activity" },
+    { title: "Broad Upload",  domain: "broad.meson.in", url: "https://broad.meson.in/s/cEETC5fmLYiHp5q",     icon: "biotech",         accent: "#a78bfa", tag: "Research Institute"},
+    { title: "Cloud Upload",  domain: "cloud.onni.me",  url: "https://cloud.onni.me/s/qJ5kNfGbwrDnqjb",      icon: "cloud_upload",    accent: "#34d399", tag: "Personal Clouds"    },
+    { title: "Box Upload",    domain: "box.meson.in",   url: "https://box.meson.in/s/gPpFNmqLNoFNY98",       icon: "inventory_2",     accent: "#fbbf24", tag: "Medical Informatics"  },
+    { title: "DNA Upload",    domain: "dna.meson.in",   url: "https://dna.meson.in/s/i5FJ8zRtiGLTEFc",       icon: "genetics",        accent: "#f43f5e", tag: "Genomic Analysis" },
+    { title: "Air Upload",    domain: "air.meson.in",   url: "https://air.meson.in/s/FQ7RDBLSw7fijmy",       icon: "air",             accent: "#67e8f9", tag: "Transfer Platform" },
+    { title: "Sync Upload",   domain: "sync.meson.in",  url: "https://sync.meson.in/s/2WBn5KNMAFJQzK3",      icon: "sync",            accent: "#818cf8", tag: "Synch Gateway" },
+    { title: "Chau Upload",   domain: "chau.onni.me",   url: "https://chau.onni.me/s/okSqmMfpinARqej",       icon: "folder_shared",   accent: "#e879f9", tag: "Private Sharing"   },
+    { title: "Halo Upload",   domain: "halo.meson.in",  url: "https://halo.meson.in/s/2mMbMqx75SgkSwi",      icon: "hub",             accent: "#fb923c", tag: "Backend Workaround" },
+    { title: "Dropbox Upload", domain: "dropbox.com",    url: "https://www.dropbox.com/request/xKRshoaU0F5bafu4VtWh", icon: "folder_zip", accent: "#0061ff", tag: "Dropbox"  },
+  ];
+
+  // ── Render cards ──
+  const grid = document.getElementById('grid');
+
+  links.forEach((item, i) => {
+    const delay = (i * 60) + 'ms';
+    const isPlaceholder = item.url === null;
+
+    if (isPlaceholder) {
+      const div = document.createElement('div');
+      div.className = 'card placeholder';
+      div.style.setProperty('--card-accent', item.accent);
+      div.style.animationDelay = delay;
+      div.innerHTML = `<div class="placeholder-inner">
+        <span class="material-symbols-rounded" style="font-size:32px;color:#7a8ba3;font-variation-settings:'FILL' 1">add_circle</span>
+        <span>Slot available</span>
+      </div>`;
+      grid.appendChild(div);
+      return;
+    }
+
+    const a = document.createElement('a');
+    a.className = 'card';
+    a.href = item.url;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    a.dataset.title = item.title.toLowerCase();
+    a.dataset.domain = item.domain.toLowerCase();
+    a.dataset.tag = item.tag.toLowerCase();
+    a.style.setProperty('--card-accent', item.accent);
+    a.style.setProperty('--card-icon-bg', item.accent + '18');
+    a.style.setProperty('--card-tag-bg', item.accent + '18');
+    a.style.animationDelay = delay;
+
+    a.innerHTML = `
+      <div style="display:flex;align-items:flex-start;gap:16px;">
+        <div class="card-icon-wrap">
+          <span class="material-symbols-rounded">${item.icon}</span>
+        </div>
+        <div class="card-meta">
+          <div class="card-index">Upload #${String(i+1).padStart(2,'0')}</div>
+          <div class="card-title">${item.title}</div>
+          <div class="card-domain">${item.domain}</div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <span class="card-tag">${item.tag}</span>
+        <span class="status-badge checking" id="status-${i}">
+          <span class="status-dot"></span>
+          <span class="status-text">Checking…</span>
+        </span>
+        <span class="card-arrow"><span class="material-symbols-rounded">arrow_outward</span></span>
+      </div>`;
+
+    // Ripple effect
+    a.addEventListener('click', function(e) {
+      const r = document.createElement('span');
+      r.className = 'ripple';
+      const rect = this.getBoundingClientRect();
+      const size = Math.max(rect.width, rect.height);
+      r.style.cssText = `width:${size}px;height:${size}px;left:${e.clientX-rect.left-size/2}px;top:${e.clientY-rect.top-size/2}px`;
+      this.appendChild(r);
+      setTimeout(() => r.remove(), 700);
+    });
+
+    // Mouse glow
+    a.addEventListener('mousemove', function(e) {
+      const rect = this.getBoundingClientRect();
+      this.style.setProperty('--mx', ((e.clientX - rect.left) / rect.width * 100) + '%');
+      this.style.setProperty('--my', ((e.clientY - rect.top) / rect.height * 100) + '%');
+    });
+
+    grid.appendChild(a);
+  });
+
+  // ── Status checking ──
+  // Uses no-cors fetch: if the server responds (any status), it's reachable.
+  // opaque response = online; TypeError (network fail) = offline.
+  let onlineCount = 0;
+  let checkedCount = 0;
+  const totalLinks = links.length;
+
+  function updateOnlineStat() {
+    checkedCount++;
+    document.getElementById('stat-online').textContent = onlineCount + '/' + totalLinks;
+  }
+
+  async function checkStatus(url, index) {
+    const badge = document.getElementById('status-' + index);
+    if (!badge) return;
+    const textEl = badge.querySelector('.status-text');
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 8000);
+      await fetch(url, { method: 'HEAD', mode: 'no-cors', signal: controller.signal });
+      clearTimeout(timeout);
+      // Any response (opaque included) = reachable
+      badge.className = 'status-badge online';
+      textEl.textContent = 'Online';
+      onlineCount++;
+    } catch (e) {
+      badge.className = 'status-badge offline';
+      textEl.textContent = e.name === 'AbortError' ? 'Timeout' : 'Offline';
+    }
+    updateOnlineStat();
+  }
+
+  // Stagger checks slightly to avoid hammering all at once
+  links.forEach((item, i) => {
+    if (item.url) setTimeout(() => checkStatus(item.url, i), i * 300);
+  });
+
+  // ── Search / filter ──
+  const search = document.getElementById('search');
+  const statVisible = document.getElementById('stat-visible');
+
+  search.addEventListener('input', () => {
+    const q = search.value.toLowerCase().trim();
+    const cards = grid.querySelectorAll('.card:not(.placeholder)');
+    let vis = 0;
+    cards.forEach(c => {
+      const match = !q || c.dataset.title.includes(q) || c.dataset.domain.includes(q) || c.dataset.tag.includes(q);
+      c.classList.toggle('hidden', !match);
+      if (match) vis++;
+    });
+    statVisible.textContent = vis;
+  });
+
+  // ── Floating particles ──
+  const container = document.getElementById('particles');
+  const colors = ['#00d4aa','#4f8ef7','#f97316','#a78bfa','#f43f5e'];
+  for (let i = 0; i < 28; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = Math.random() * 4 + 2;
+    p.style.cssText = `
+      width:${size}px; height:${size}px;
+      left:${Math.random()*100}%;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      animation-duration:${12 + Math.random()*16}s;
+      animation-delay:${Math.random()*14}s;
+    `;
+    container.appendChild(p);
+  }
+
+  // ── Year ──
+  document.getElementById('yr').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
