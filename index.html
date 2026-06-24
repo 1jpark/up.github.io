@@ -16,7 +16,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"/>
   <!-- Material Symbols -->
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
-  <!-- Ripple (Material) via inline JS -->
 
   <style>
     :root {
@@ -31,11 +30,9 @@
       --text-muted:   #7a8ba3;
       --shadow:       0 8px 32px rgba(0,0,0,0.45);
       --radius:       18px;
-      --card-h:       160px;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     html { scroll-behavior: smooth; }
 
     body {
@@ -46,7 +43,6 @@
       overflow-x: hidden;
     }
 
-    /* ── Animated mesh background ── */
     body::before {
       content: '';
       position: fixed; inset: 0; z-index: 0;
@@ -57,12 +53,9 @@
       pointer-events: none;
     }
 
-    /* ── Floating particles ── */
     .particles { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
     .particle {
-      position: absolute;
-      border-radius: 50%;
-      opacity: 0;
+      position: absolute; border-radius: 50%; opacity: 0;
       animation: float-up linear infinite;
     }
     @keyframes float-up {
@@ -72,29 +65,99 @@
       100% { transform: translateY(-10vh) scale(1); opacity: 0; }
     }
 
-    /* ── Layout ── */
+    /* ─────────────────────────────────────────
+       REDIRECT OVERLAY
+    ───────────────────────────────────────── */
+    #redirect-overlay {
+      display: none;
+      position: fixed; inset: 0; z-index: 100;
+      align-items: center; justify-content: center;
+      flex-direction: column;
+      background: var(--bg);
+    }
+    #redirect-overlay.active { display: flex; }
+
+    .redir-card {
+      position: relative;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 48px 52px 40px;
+      text-align: center;
+      max-width: 400px; width: 90%;
+      animation: fade-down 0.5s ease both;
+      overflow: hidden;
+    }
+    .redir-card::after {
+      content: '';
+      position: absolute; top: 0; left: 15%; right: 15%; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--redir-accent, var(--accent)), transparent);
+    }
+
+    .redir-icon-wrap {
+      width: 72px; height: 72px; border-radius: 20px;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 20px;
+    }
+    .redir-icon-wrap .material-symbols-rounded {
+      font-size: 34px; color: #fff;
+      font-variation-settings: 'FILL' 1;
+    }
+
+    .redir-tag {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.16em;
+      text-transform: uppercase; color: var(--redir-accent, var(--accent));
+      margin-bottom: 8px;
+    }
+    .redir-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.7rem; line-height: 1.15;
+      margin-bottom: 6px;
+    }
+    .redir-domain {
+      font-size: 0.78rem; color: var(--text-muted);
+      margin-bottom: 32px;
+    }
+
+    .redir-progress-track {
+      height: 3px; border-radius: 3px;
+      background: rgba(255,255,255,0.07);
+      overflow: hidden; margin-bottom: 14px;
+    }
+    .redir-progress-fill {
+      height: 100%; width: 0%; border-radius: 3px;
+      transition: width 2.4s cubic-bezier(0.4,0,0.2,1);
+    }
+    .redir-status {
+      font-size: 0.78rem; color: var(--text-muted);
+    }
+    .redir-cancel {
+      margin-top: 20px;
+      font-size: 0.75rem; color: var(--text-muted);
+      cursor: pointer; text-decoration: underline;
+      background: none; border: none; color: var(--text-muted);
+      font-family: inherit;
+    }
+    .redir-cancel:hover { color: var(--text); }
+
+    /* ─────────────────────────────────────────
+       MAIN PORTAL (unchanged layout)
+    ───────────────────────────────────────── */
     .wrapper {
       position: relative; z-index: 1;
-      max-width: 1200px;
-      margin: 0 auto;
+      max-width: 1200px; margin: 0 auto;
       padding: 0 24px 80px;
     }
 
-    /* ── Header ── */
     header {
-      padding: 56px 0 48px;
-      text-align: center;
-      position: relative;
+      padding: 56px 0 48px; text-align: center; position: relative;
     }
     .header-eyebrow {
       display: inline-flex; align-items: center; gap: 8px;
       font-size: 11px; font-weight: 600; letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--accent);
-      background: rgba(0,212,170,0.10);
-      border: 1px solid rgba(0,212,170,0.25);
-      padding: 6px 16px; border-radius: 100px;
-      margin-bottom: 24px;
+      text-transform: uppercase; color: var(--accent);
+      background: rgba(0,212,170,0.10); border: 1px solid rgba(0,212,170,0.25);
+      padding: 6px 16px; border-radius: 100px; margin-bottom: 24px;
       animation: fade-down 0.6s ease both;
     }
     .header-eyebrow .material-symbols-rounded { font-size: 14px; }
@@ -102,30 +165,22 @@
     h1 {
       font-family: 'DM Serif Display', serif;
       font-size: clamp(2.4rem, 5vw, 4rem);
-      line-height: 1.1;
-      letter-spacing: -0.02em;
-      color: var(--text);
+      line-height: 1.1; letter-spacing: -0.02em; color: var(--text);
       animation: fade-down 0.7s 0.1s ease both;
     }
     h1 em {
       font-style: italic;
       background: linear-gradient(135deg, var(--accent), var(--accent2));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     }
-
     .subtitle {
-      margin-top: 16px;
-      font-size: 1rem; color: var(--text-muted); font-weight: 400;
+      margin-top: 16px; font-size: 1rem; color: var(--text-muted); font-weight: 400;
       animation: fade-down 0.7s 0.2s ease both;
     }
 
-    /* ── Search / Filter ── */
     .search-wrap {
       display: flex; justify-content: center;
-      margin: 36px 0 48px;
-      animation: fade-down 0.7s 0.3s ease both;
+      margin: 36px 0 48px; animation: fade-down 0.7s 0.3s ease both;
     }
     .search-box {
       display: flex; align-items: center; gap: 10px;
@@ -145,32 +200,25 @@
     }
     .search-box input::placeholder { color: var(--text-muted); }
 
-    /* ── Stats bar ── */
     .stats {
       display: flex; justify-content: center; gap: 40px;
-      margin-bottom: 48px;
-      animation: fade-down 0.7s 0.35s ease both;
+      margin-bottom: 48px; animation: fade-down 0.7s 0.35s ease both;
     }
     .stat { text-align: center; }
     .stat-num { font-size: 1.6rem; font-weight: 700; color: var(--accent); }
     .stat-lbl { font-size: 0.75rem; color: var(--text-muted); letter-spacing: 0.05em; text-transform: uppercase; margin-top: 2px; }
 
-    /* ── Grid ── */
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       gap: 20px;
     }
 
-    /* ── Card ── */
     .card {
       position: relative;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 28px 24px 22px;
-      text-decoration: none;
-      color: inherit;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 28px 24px 22px;
+      text-decoration: none; color: inherit;
       display: flex; flex-direction: column; gap: 14px;
       overflow: hidden;
       transition: transform 0.25s cubic-bezier(.34,1.56,.64,1),
@@ -185,52 +233,36 @@
                   0 0 0 1px var(--card-accent, var(--accent)),
                   inset 0 1px 0 rgba(255,255,255,0.06);
     }
-
-    /* Glow on hover */
     .card::before {
-      content: '';
-      position: absolute; inset: 0; border-radius: inherit;
+      content: ''; position: absolute; inset: 0; border-radius: inherit;
       background: radial-gradient(circle at var(--mx,50%) var(--my,50%),
         rgba(255,255,255,0.04) 0%, transparent 65%);
-      transition: opacity 0.3s;
-      opacity: 0; pointer-events: none;
+      transition: opacity 0.3s; opacity: 0; pointer-events: none;
     }
     .card:hover::before { opacity: 1; }
-
-    /* Shimmer line top */
     .card::after {
-      content: '';
-      position: absolute; top: 0; left: 10%; right: 10%; height: 1px;
+      content: ''; position: absolute; top: 0; left: 10%; right: 10%; height: 1px;
       background: linear-gradient(90deg, transparent, var(--card-accent, var(--accent)), transparent);
-      opacity: 0;
-      transition: opacity 0.25s;
+      opacity: 0; transition: opacity 0.25s;
     }
     .card:hover::after { opacity: 0.8; }
 
-    /* Placeholder card */
     .card.placeholder {
-      border-style: dashed;
-      opacity: 0.45;
-      pointer-events: none;
-      justify-content: center; align-items: center;
-      min-height: 140px;
+      border-style: dashed; opacity: 0.45; pointer-events: none;
+      justify-content: center; align-items: center; min-height: 140px;
     }
     .card.placeholder .placeholder-inner {
       display: flex; flex-direction: column; align-items: center; gap: 8px;
-      color: var(--text-muted);
-      font-size: 0.85rem;
+      color: var(--text-muted); font-size: 0.85rem;
     }
 
     .card-icon-wrap {
-      width: 48px; height: 48px;
-      border-radius: 14px;
+      width: 48px; height: 48px; border-radius: 14px;
       display: flex; align-items: center; justify-content: center;
-      background: var(--card-icon-bg, rgba(0,212,170,0.12));
-      flex-shrink: 0;
+      background: var(--card-icon-bg, rgba(0,212,170,0.12)); flex-shrink: 0;
     }
     .card-icon-wrap .material-symbols-rounded {
-      font-size: 26px;
-      color: var(--card-accent, var(--accent));
+      font-size: 26px; color: var(--card-accent, var(--accent));
       font-variation-settings: 'FILL' 1;
     }
 
@@ -240,24 +272,16 @@
       text-transform: uppercase; color: var(--card-accent, var(--accent));
       opacity: 0.7; margin-bottom: 4px;
     }
-    .card-title {
-      font-size: 1.05rem; font-weight: 600; color: var(--text);
-      margin-bottom: 4px; line-height: 1.3;
-    }
-    .card-domain {
-      font-size: 0.78rem; color: var(--text-muted);
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    }
+    .card-title { font-size: 1.05rem; font-weight: 600; color: var(--text); margin-bottom: 4px; line-height: 1.3; }
+    .card-domain { font-size: 0.78rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
     .card-footer {
       display: flex; align-items: center; justify-content: space-between;
-      border-top: 1px solid var(--border);
-      padding-top: 14px; margin-top: 4px;
+      border-top: 1px solid var(--border); padding-top: 14px; margin-top: 4px;
     }
     .card-tag {
       font-size: 10px; font-weight: 600; letter-spacing: 0.1em;
-      text-transform: uppercase; padding: 3px 10px;
-      border-radius: 100px;
+      text-transform: uppercase; padding: 3px 10px; border-radius: 100px;
       background: var(--card-tag-bg, rgba(0,212,170,0.12));
       color: var(--card-accent, var(--accent));
     }
@@ -270,61 +294,33 @@
       transform: translate(3px, -3px);
     }
 
-    /* ── Status badge ── */
     .status-badge {
       display: inline-flex; align-items: center; gap: 5px;
       font-size: 10px; font-weight: 600; letter-spacing: 0.08em;
-      text-transform: uppercase; padding: 3px 9px;
-      border-radius: 100px;
+      text-transform: uppercase; padding: 3px 9px; border-radius: 100px;
       transition: background 0.4s, color 0.4s;
     }
     .status-dot {
-      width: 6px; height: 6px; border-radius: 50%;
-      flex-shrink: 0;
-      transition: background 0.4s;
+      width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; transition: background 0.4s;
     }
-    .status-badge.checking {
-      background: rgba(122,139,163,0.15);
-      color: #7a8ba3;
-    }
-    .status-badge.checking .status-dot {
-      background: #7a8ba3;
-      animation: pulse-dot 1.2s ease-in-out infinite;
-    }
-    .status-badge.online {
-      background: rgba(52,211,153,0.15);
-      color: #34d399;
-    }
-    .status-badge.online .status-dot {
-      background: #34d399;
-      box-shadow: 0 0 6px #34d399;
-      animation: pulse-dot 2s ease-in-out infinite;
-    }
-    .status-badge.offline {
-      background: rgba(244,63,94,0.13);
-      color: #f43f5e;
-    }
-    .status-badge.offline .status-dot {
-      background: #f43f5e;
-    }
+    .status-badge.checking { background: rgba(122,139,163,0.15); color: #7a8ba3; }
+    .status-badge.checking .status-dot { background: #7a8ba3; animation: pulse-dot 1.2s ease-in-out infinite; }
+    .status-badge.online   { background: rgba(52,211,153,0.15);  color: #34d399; }
+    .status-badge.online   .status-dot { background: #34d399; box-shadow: 0 0 6px #34d399; animation: pulse-dot 2s ease-in-out infinite; }
+    .status-badge.offline  { background: rgba(244,63,94,0.13);   color: #f43f5e; }
+    .status-badge.offline  .status-dot { background: #f43f5e; }
     @keyframes pulse-dot {
       0%, 100% { opacity: 1; transform: scale(1); }
       50%       { opacity: 0.5; transform: scale(0.7); }
     }
 
-    /* Ripple */
     .ripple {
       position: absolute; border-radius: 50%;
       background: rgba(255,255,255,0.15);
-      transform: scale(0);
-      animation: ripple-anim 0.6s linear;
-      pointer-events: none;
+      transform: scale(0); animation: ripple-anim 0.6s linear; pointer-events: none;
     }
-    @keyframes ripple-anim {
-      to { transform: scale(4); opacity: 0; }
-    }
+    @keyframes ripple-anim { to { transform: scale(4); opacity: 0; } }
 
-    /* ── Animations ── */
     @keyframes fade-down {
       from { opacity: 0; transform: translateY(-18px); }
       to   { opacity: 1; transform: translateY(0); }
@@ -334,7 +330,6 @@
       to   { opacity: 1; transform: translateY(0)   scale(1); }
     }
 
-    /* ── Footer ── */
     footer {
       text-align: center; margin-top: 64px;
       font-size: 0.78rem; color: var(--text-muted);
@@ -342,17 +337,16 @@
     }
     footer a { color: var(--accent); text-decoration: none; }
 
-    /* ── Scrollbar ── */
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: var(--bg); }
     ::-webkit-scrollbar-thumb { background: var(--surface2); border-radius: 3px; }
 
-    /* ── Hide on filter ── */
     .card.hidden { display: none; }
 
     @media (max-width: 600px) {
       .stats { gap: 24px; }
       .stat-num { font-size: 1.2rem; }
+      .redir-card { padding: 36px 28px 32px; }
     }
   </style>
 </head>
@@ -360,7 +354,25 @@
 
 <div class="particles" id="particles"></div>
 
-<div class="wrapper">
+<!-- ── Redirect overlay ── -->
+<div id="redirect-overlay">
+  <div class="redir-card" id="redirCard">
+    <div class="redir-icon-wrap" id="redirIconWrap">
+      <span class="material-symbols-rounded" id="redirIconName">upload</span>
+    </div>
+    <div class="redir-tag" id="redirTag">—</div>
+    <div class="redir-title" id="redirTitle">Upload Portal</div>
+    <div class="redir-domain" id="redirDomain">—</div>
+    <div class="redir-progress-track">
+      <div class="redir-progress-fill" id="redirProgress"></div>
+    </div>
+    <div class="redir-status">Redirecting in 2 seconds…</div>
+    <button class="redir-cancel" onclick="cancelRedirect()">Cancel</button>
+  </div>
+</div>
+
+<!-- ── Main portal ── -->
+<div class="wrapper" id="mainPortal">
   <header>
     <div class="header-eyebrow">
       <span class="material-symbols-rounded">cloud_upload</span>
@@ -392,9 +404,7 @@
     </div>
   </div>
 
-  <div class="grid" id="grid">
-    <!-- Cards injected by JS -->
-  </div>
+  <div class="grid" id="grid"></div>
 </div>
 
 <footer>
@@ -404,51 +414,99 @@
 <script>
   // ── Data ──
   const links = [
-    { title: "HMS Upload",    domain: "hms.meson.in",   url: "https://hms.meson.in/s/2DSWKijZ85jNJGL",       icon: "local_hospital",  accent: "#B80B0B", tag: "Medical School" },
-    { title: "MGH Upload",    domain: "mgh.meson.in",   url: "https://mgh.meson.in/s/4fbRjoPJc79Hfdz",       icon: "medical_services",accent: "#008BB0", tag: "General Hostpial"  },
-    { title: "NUS Upload",    domain: "nus.meson.in",   url: "https://nus.meson.in/s/zrQnJawN2qNQk8i",       icon: "school",          accent: "#EF7C00", tag: "Academic Activity" },
-    { title: "Broad Upload",  domain: "broad.meson.in", url: "https://broad.meson.in/s/CW9CYrypQfzgA6e",     icon: "biotech",         accent: "#015F9D", tag: "Research Institute"},
-    { title: "Cloud Upload",  domain: "cloud.onni.me",  url: "https://cloud.onni.me/s/2embnWfNNK2iDa4",      icon: "cloud_upload",    accent: "#003876", tag: "Personal Clouds"    },
-    { title: "Box Upload",    domain: "box.meson.in",   url: "https://box.meson.in/s/WppmxjtXYg9Lko6",       icon: "inventory_2",     accent: "#009CA6", tag: "Medical Informatics"  },
-    { title: "DNA Upload",    domain: "dna.meson.in",   url: "https://dna.meson.in/s/n2pc4i8F553ZcYy",       icon: "genetics",        accent: "#6E6F71", tag: "Genomic Analysis" },
-    { title: "Air Upload",    domain: "air.meson.in",   url: "https://air.meson.in/s/SyKLy5bkngAfwd2",       icon: "air",             accent: "#99C8A8", tag: "Transfer Platform" },
-    { title: "Sync Upload",   domain: "sync.meson.in",  url: "https://sync.meson.in/s/FkMekqBcWwmn6dH",      icon: "sync",            accent: "#818cf8", tag: "Synch Gateway" },
-    { title: "Chau Upload",   domain: "chau.onni.me",   url: "https://chau.onni.me/s/jxdscR2n7mnPMBq",       icon: "folder_shared",   accent: "#ddcb55", tag: "Private Sharing"   },
-    { title: "Halo Upload",   domain: "halo.meson.in",  url: "https://halo.meson.in/s/LS6YiW5AnxKmaKG",      icon: "hub",             accent: "#5B64B3", tag: "Backend Workaround" },
-    { title: "Dropbox Upload", domain: "dropbox.com",    url: "https://www.dropbox.com/request/xKRshoaU0F5bafu4VtWh", icon: "folder_zip", accent: "#0061ff", tag: "Dropbox"  },
+    { title: "HMS Upload",     domain: "hms.meson.in",   url: "https://hms.meson.in/s/2DSWKijZ85jNJGL",            icon: "local_hospital",  accent: "#B80B0B", tag: "Medical School"      },
+    { title: "MGH Upload",     domain: "mgh.meson.in",   url: "https://mgh.meson.in/s/4fbRjoPJc79Hfdz",            icon: "medical_services", accent: "#008BB0", tag: "General Hospital"    },
+    { title: "NUS Upload",     domain: "nus.meson.in",   url: "https://nus.meson.in/s/zrQnJawN2qNQk8i",            icon: "school",           accent: "#EF7C00", tag: "Academic Activity"   },
+    { title: "Broad Upload",   domain: "broad.meson.in", url: "https://broad.meson.in/s/CW9CYrypQfzgA6e",          icon: "biotech",          accent: "#015F9D", tag: "Research Institute"  },
+    { title: "Cloud Upload",   domain: "cloud.onni.me",  url: "https://cloud.onni.me/s/2embnWfNNK2iDa4",           icon: "cloud_upload",     accent: "#003876", tag: "Personal Clouds"     },
+    { title: "Box Upload",     domain: "box.meson.in",   url: "https://box.meson.in/s/WppmxjtXYg9Lko6",            icon: "inventory_2",      accent: "#009CA6", tag: "Medical Informatics" },
+    { title: "DNA Upload",     domain: "dna.meson.in",   url: "https://dna.meson.in/s/n2pc4i8F553ZcYy",            icon: "genetics",         accent: "#6E6F71", tag: "Genomic Analysis"    },
+    { title: "Air Upload",     domain: "air.meson.in",   url: "https://air.meson.in/s/SyKLy5bkngAfwd2",            icon: "air",              accent: "#99C8A8", tag: "Transfer Platform"   },
+    { title: "Sync Upload",    domain: "sync.meson.in",  url: "https://sync.meson.in/s/FkMekqBcWwmn6dH",           icon: "sync",             accent: "#818cf8", tag: "Sync Gateway"        },
+    { title: "Chau Upload",    domain: "chau.onni.me",   url: "https://chau.onni.me/s/jxdscR2n7mnPMBq",            icon: "folder_shared",    accent: "#ddcb55", tag: "Private Sharing"     },
+    { title: "Halo Upload",    domain: "halo.meson.in",  url: "https://halo.meson.in/s/LS6YiW5AnxKmaKG",           icon: "hub",              accent: "#5B64B3", tag: "Backend Workaround"  },
+    { title: "Dropbox Upload", domain: "dropbox.com",    url: "https://www.dropbox.com/request/xKRshoaU0F5bafu4VtWh", icon: "folder_zip",    accent: "#0061ff", tag: "Dropbox"             },
   ];
 
-  // ── Render cards ──
+  // ─────────────────────────────────────────
+  // REDIRECT LOGIC (?domain= param)
+  // ─────────────────────────────────────────
+  let redirectTimer = null;
+
+  function hexToRgba(hex, alpha) {
+    const r = parseInt(hex.slice(1,3),16);
+    const g = parseInt(hex.slice(3,5),16);
+    const b = parseInt(hex.slice(5,7),16);
+    return `rgba(${r},${g},${b},${alpha})`;
+  }
+
+  function cancelRedirect() {
+    clearTimeout(redirectTimer);
+    redirectTimer = null;
+    document.getElementById('redirect-overlay').classList.remove('active');
+    // clean the URL without reload
+    history.replaceState(null, '', location.pathname);
+  }
+
+  function triggerRedirect(item) {
+    const overlay   = document.getElementById('redirect-overlay');
+    const iconWrap  = document.getElementById('redirIconWrap');
+    const progress  = document.getElementById('redirProgress');
+
+    document.getElementById('redirIconName').textContent = item.icon;
+    document.getElementById('redirIconName').style.fontVariationSettings = "'FILL' 1";
+    document.getElementById('redirTag').textContent      = item.tag;
+    document.getElementById('redirTitle').textContent    = item.title;
+    document.getElementById('redirDomain').textContent   = item.domain;
+
+    iconWrap.style.background = hexToRgba(item.accent, 0.18);
+    iconWrap.style.boxShadow  = `0 0 32px ${hexToRgba(item.accent, 0.3)}`;
+
+    // Card top shimmer uses CSS var
+    document.getElementById('redirCard').style.setProperty('--redir-accent', item.accent);
+
+    progress.style.background = `linear-gradient(90deg, ${hexToRgba(item.accent,0.5)}, ${item.accent})`;
+    progress.style.width = '0%';
+
+    overlay.classList.add('active');
+
+    // Animate progress bar next frame
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      progress.style.width = '100%';
+    }));
+
+    redirectTimer = setTimeout(() => {
+      window.location.href = item.url;
+    }, 2500);
+  }
+
+  // Check for ?domain= on load
+  (function() {
+    const param = new URLSearchParams(location.search).get('domain');
+    if (!param) return;
+    const match = links.find(l => l.domain.toLowerCase() === param.toLowerCase().trim());
+    if (match) triggerRedirect(match);
+    // If no match: silently show the portal as normal (unknown domain)
+  })();
+
+  // ─────────────────────────────────────────
+  // RENDER CARDS
+  // ─────────────────────────────────────────
   const grid = document.getElementById('grid');
 
   links.forEach((item, i) => {
     const delay = (i * 60) + 'ms';
-    const isPlaceholder = item.url === null;
-
-    if (isPlaceholder) {
-      const div = document.createElement('div');
-      div.className = 'card placeholder';
-      div.style.setProperty('--card-accent', item.accent);
-      div.style.animationDelay = delay;
-      div.innerHTML = `<div class="placeholder-inner">
-        <span class="material-symbols-rounded" style="font-size:32px;color:#7a8ba3;font-variation-settings:'FILL' 1">add_circle</span>
-        <span>Slot available</span>
-      </div>`;
-      grid.appendChild(div);
-      return;
-    }
 
     const a = document.createElement('a');
     a.className = 'card';
-    a.href = item.url;
-    a.target = '_blank';
-    a.rel = 'noopener noreferrer';
-    a.dataset.title = item.title.toLowerCase();
+    // Card click → show redirect overlay instead of navigating directly
+    a.href = '?domain=' + item.domain;
+    a.dataset.title  = item.title.toLowerCase();
     a.dataset.domain = item.domain.toLowerCase();
-    a.dataset.tag = item.tag.toLowerCase();
-    a.style.setProperty('--card-accent', item.accent);
-    a.style.setProperty('--card-icon-bg', item.accent + '18');
-    a.style.setProperty('--card-tag-bg', item.accent + '18');
+    a.dataset.tag    = item.tag.toLowerCase();
+    a.style.setProperty('--card-accent',   item.accent);
+    a.style.setProperty('--card-icon-bg',  item.accent + '18');
+    a.style.setProperty('--card-tag-bg',   item.accent + '18');
     a.style.animationDelay = delay;
 
     a.innerHTML = `
@@ -471,8 +529,10 @@
         <span class="card-arrow"><span class="material-symbols-rounded">arrow_outward</span></span>
       </div>`;
 
-    // Ripple effect
+    // Intercept click → overlay (not full navigation)
     a.addEventListener('click', function(e) {
+      e.preventDefault();
+      // Ripple
       const r = document.createElement('span');
       r.className = 'ripple';
       const rect = this.getBoundingClientRect();
@@ -480,6 +540,9 @@
       r.style.cssText = `width:${size}px;height:${size}px;left:${e.clientX-rect.left-size/2}px;top:${e.clientY-rect.top-size/2}px`;
       this.appendChild(r);
       setTimeout(() => r.remove(), 700);
+      // Update URL (shareable link) and trigger overlay
+      history.pushState(null, '', '?domain=' + item.domain);
+      triggerRedirect(item);
     });
 
     // Mouse glow
@@ -492,11 +555,10 @@
     grid.appendChild(a);
   });
 
-  // ── Status checking ──
-  // Uses no-cors fetch: if the server responds (any status), it's reachable.
-  // opaque response = online; TypeError (network fail) = offline.
-  let onlineCount = 0;
-  let checkedCount = 0;
+  // ─────────────────────────────────────────
+  // STATUS CHECKING
+  // ─────────────────────────────────────────
+  let onlineCount = 0, checkedCount = 0;
   const totalLinks = links.length;
 
   function updateOnlineStat() {
@@ -505,7 +567,7 @@
   }
 
   async function checkStatus(url, index) {
-    const badge = document.getElementById('status-' + index);
+    const badge  = document.getElementById('status-' + index);
     if (!badge) return;
     const textEl = badge.querySelector('.status-text');
     try {
@@ -513,7 +575,6 @@
       const timeout = setTimeout(() => controller.abort(), 8000);
       await fetch(url, { method: 'HEAD', mode: 'no-cors', signal: controller.signal });
       clearTimeout(timeout);
-      // Any response (opaque included) = reachable
       badge.className = 'status-badge online';
       textEl.textContent = 'Online';
       onlineCount++;
@@ -524,14 +585,17 @@
     updateOnlineStat();
   }
 
-  // Stagger checks slightly to avoid hammering all at once
   links.forEach((item, i) => {
     if (item.url) setTimeout(() => checkStatus(item.url, i), i * 300);
   });
 
-  // ── Search / filter ──
-  const search = document.getElementById('search');
+  // ─────────────────────────────────────────
+  // SEARCH / FILTER
+  // ─────────────────────────────────────────
+  const search      = document.getElementById('search');
   const statVisible = document.getElementById('stat-visible');
+  document.getElementById('stat-total').textContent   = links.length;
+  document.getElementById('stat-visible').textContent = links.length;
 
   search.addEventListener('input', () => {
     const q = search.value.toLowerCase().trim();
@@ -545,24 +609,19 @@
     statVisible.textContent = vis;
   });
 
-  // ── Floating particles ──
+  // ─────────────────────────────────────────
+  // FLOATING PARTICLES
+  // ─────────────────────────────────────────
   const container = document.getElementById('particles');
   const colors = ['#00d4aa','#4f8ef7','#f97316','#a78bfa','#f43f5e'];
   for (let i = 0; i < 28; i++) {
     const p = document.createElement('div');
     p.className = 'particle';
     const size = Math.random() * 4 + 2;
-    p.style.cssText = `
-      width:${size}px; height:${size}px;
-      left:${Math.random()*100}%;
-      background:${colors[Math.floor(Math.random()*colors.length)]};
-      animation-duration:${12 + Math.random()*16}s;
-      animation-delay:${Math.random()*14}s;
-    `;
+    p.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}%;background:${colors[Math.floor(Math.random()*colors.length)]};animation-duration:${12+Math.random()*16}s;animation-delay:${Math.random()*14}s;`;
     container.appendChild(p);
   }
 
-  // ── Year ──
   document.getElementById('yr').textContent = new Date().getFullYear();
 </script>
 </body>
