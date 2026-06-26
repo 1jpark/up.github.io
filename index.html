@@ -482,7 +482,7 @@
 
   // Check for ?domain= on load
   (function() {
-    const param = new URLSearchParams(location.search).get('domain');
+    const param = new URLSearchParams(location.search).get('d');
     if (!param) return;
     const match = links.find(l => l.domain.toLowerCase() === param.toLowerCase().trim());
     if (match) triggerRedirect(match);
@@ -500,7 +500,7 @@
     const a = document.createElement('a');
     a.className = 'card';
     // Card click → show redirect overlay instead of navigating directly
-    a.href = '?domain=' + item.domain;
+    a.href = '?d=' + item.domain;
     a.dataset.title  = item.title.toLowerCase();
     a.dataset.domain = item.domain.toLowerCase();
     a.dataset.tag    = item.tag.toLowerCase();
@@ -541,7 +541,7 @@
       this.appendChild(r);
       setTimeout(() => r.remove(), 700);
       // Update URL (shareable link) and trigger overlay
-      history.pushState(null, '', '?domain=' + item.domain);
+      history.pushState(null, '', '?d=' + item.domain);
       triggerRedirect(item);
     });
 
