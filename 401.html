@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="robots" content="noindex, nofollow" />
+  <title>401 Authentication required · June's File Upload Portal</title>
+
+  <!-- Favicons -->
+  <link rel="icon" type="image/png" href="https://cdn.meson.one/f/up.meson.one/favicon-96x96.png" sizes="96x96" />
+  <link rel="icon" type="image/svg+xml" href="https://cdn.meson.one/f/up.meson.one/favicon.svg" />
+  <link rel="shortcut icon" href="https://cdn.meson.one/f/up.meson.one/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.meson.one/f/up.meson.one/apple-touch-icon.png" />
+  <link rel="manifest" href="https://cdn.meson.one/f/up.meson.one/site.webmanifest" />
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+
+  <style>
+    :root {
+      --bg:           #0a0f1e;
+      --surface:      #111827;
+      --surface2:     #1a2236;
+      --border:       rgba(255,255,255,0.07);
+      --accent:       #00d4aa;
+      --accent2:      #4f8ef7;
+      --accent3:      #f97316;
+      --text:         #e8edf5;
+      --text-muted:   #7a8ba3;
+      --radius:       18px;
+      --err:          #f97316;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex; flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 10% 20%, rgba(79,142,247,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 90% 80%, rgba(0,212,170,0.10) 0%, transparent 55%),
+        radial-gradient(ellipse 50% 40% at 50% 50%, rgba(249,115,22,0.09) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .particles { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+    .particle {
+      position: absolute; border-radius: 50%; opacity: 0;
+      animation: float-up linear infinite;
+    }
+    @keyframes float-up {
+      0%   { transform: translateY(110vh) scale(0); opacity: 0; }
+      10%  { opacity: 0.6; }
+      90%  { opacity: 0.3; }
+      100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+    }
+
+    main {
+      position: relative; z-index: 1;
+      flex: 1; display: flex; align-items: center; justify-content: center;
+      padding: 40px 24px;
+    }
+
+    .err-card {
+      position: relative;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 52px 52px 44px;
+      text-align: center;
+      max-width: 480px; width: 100%;
+      overflow: hidden;
+      box-shadow: 0 20px 48px rgba(0,0,0,0.5);
+      animation: fade-down 0.6s ease both;
+    }
+    .err-card::after {
+      content: '';
+      position: absolute; top: 0; left: 15%; right: 15%; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--err), transparent);
+    }
+
+    .err-icon-wrap {
+      width: 72px; height: 72px; border-radius: 20px;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 22px;
+      background: rgba(249,115,22,0.18);
+      box-shadow: 0 0 32px rgba(249,115,22,0.30);
+    }
+    .err-icon-wrap .material-symbols-rounded {
+      font-size: 34px; color: #fff;
+      font-variation-settings: 'FILL' 1;
+    }
+
+    .err-tag {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.16em;
+      text-transform: uppercase; color: var(--err);
+      margin-bottom: 6px;
+    }
+
+    .err-code {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(4.5rem, 16vw, 6.5rem);
+      line-height: 1; letter-spacing: -0.03em;
+      background: linear-gradient(135deg, var(--err), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      margin-bottom: 10px;
+    }
+
+    .err-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.6rem; line-height: 1.2; margin-bottom: 10px;
+    }
+    .err-msg {
+      font-size: 0.92rem; color: var(--text-muted); line-height: 1.6;
+      margin: 0 auto 22px; max-width: 360px;
+    }
+
+    .err-path {
+      display: inline-flex; align-items: center; gap: 8px;
+      max-width: 100%;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 100px; padding: 8px 16px; margin-bottom: 30px;
+      font-size: 0.78rem; color: var(--text-muted);
+    }
+    .err-path .material-symbols-rounded { font-size: 16px; flex-shrink: 0; }
+    .err-path code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text);
+    }
+
+    .actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: inherit; font-size: 0.88rem; font-weight: 600;
+      padding: 12px 22px; border-radius: 100px; cursor: pointer;
+      text-decoration: none; border: 1px solid var(--border);
+      transition: transform 0.2s cubic-bezier(.34,1.56,.64,1), border-color 0.2s, box-shadow 0.2s, background 0.2s;
+    }
+    .btn .material-symbols-rounded { font-size: 18px; }
+    .btn:hover { transform: translateY(-2px); }
+    .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #06101f; border-color: transparent;
+    }
+    .btn-primary:hover { box-shadow: 0 8px 24px rgba(0,212,170,0.25); }
+    .btn-ghost { background: transparent; color: var(--text); }
+    .btn-ghost:hover { border-color: var(--err); box-shadow: 0 0 0 1px var(--err); }
+
+    footer {
+      position: relative; z-index: 1;
+      text-align: center; padding: 0 24px 32px;
+      font-size: 0.78rem; color: var(--text-muted); letter-spacing: 0.05em;
+    }
+
+    @keyframes fade-down {
+      from { opacity: 0; transform: translateY(-18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 600px) {
+      .err-card { padding: 40px 26px 34px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .particle { display: none; }
+      .err-card, .btn { animation: none; transition: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="particles" id="particles"></div>
+
+<main>
+  <section class="err-card" role="alert">
+    <div class="err-icon-wrap">
+      <span class="material-symbols-rounded">lock</span>
+    </div>
+    <div class="err-tag">Unauthorized</div>
+    <div class="err-code">401</div>
+    <h1 class="err-title">Sign in to continue</h1>
+    <p class="err-msg">This area needs valid credentials, and the ones provided were missing or incorrect. Try again with the correct username and password.</p>
+
+    <div class="err-path">
+      <span class="material-symbols-rounded">link</span>
+      <code id="path">/</code>
+    </div>
+
+    <div class="actions">
+      <a class="btn btn-primary" href="/">
+        <span class="material-symbols-rounded">cloud_upload</span>
+        Open upload portal
+      </a>
+      <button class="btn btn-ghost" onclick="location.reload()">
+        <span class="material-symbols-rounded">refresh</span>
+        Try again
+      </button>
+    </div>
+  </section>
+</main>
+
+<footer>
+  &copy; <span id="yr"></span> &mdash; Secure Upload Portal &middot; All transfers encrypted
+</footer>
+
+<script>
+  document.getElementById('path').textContent = location.pathname + location.search;
+  document.getElementById('yr').textContent = new Date().getFullYear();
+
+  const container = document.getElementById('particles');
+  const colors = ['#00d4aa','#4f8ef7','#f97316','#a78bfa','#f43f5e'];
+  for (let i = 0; i < 28; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = Math.random() * 4 + 2;
+    p.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}%;background:${colors[Math.floor(Math.random()*colors.length)]};animation-duration:${12+Math.random()*16}s;animation-delay:${Math.random()*14}s;`;
+    container.appendChild(p);
+  }
+</script>
+</body>
+</html>
