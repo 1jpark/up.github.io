@@ -1,628 +1,369 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>June's File Upload Portal</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>June's File Upload Portal</title>
+<meta name="description" content="Choose a destination and upload your files securely.">
+<meta name="theme-color" content="#c8ac61">
 
-  <!-- Favicons -->
-  <link rel="icon" type="image/png" href="https://cdn.meson.one/f/up.meson.one/favicon-96x96.png" sizes="96x96" />
-  <link rel="icon" type="image/svg+xml" href="https://cdn.meson.one/f/up.meson.one/favicon.svg" />
-  <link rel="shortcut icon" href="https://cdn.meson.one/f/up.meson.one/favicon.ico" />
-  <link rel="apple-touch-icon" sizes="180x180" href="https://cdn.meson.one/f/up.meson.one/apple-touch-icon.png" />
-  <link rel="manifest" href="https://cdn.meson.one/f/up.meson.one/site.webmanifest" />
+<link rel="icon" type="image/png" href="https://cdn.meson.one/f/up.meson.one/favicon-96x96.png" sizes="96x96">
+<link rel="icon" type="image/svg+xml" href="https://cdn.meson.one/f/up.meson.one/favicon.svg">
+<link rel="shortcut icon" href="https://cdn.meson.one/f/up.meson.one/favicon.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="https://cdn.meson.one/f/up.meson.one/apple-touch-icon.png">
+<link rel="manifest" href="https://cdn.meson.one/f/up.meson.one/site.webmanifest">
 
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"/>
-  <!-- Material Symbols -->
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0&display=block" rel="stylesheet">
 
-  <style>
-    :root {
-      --bg:           #0a0f1e;
-      --surface:      #111827;
-      --surface2:     #1a2236;
-      --border:       rgba(255,255,255,0.07);
-      --accent:       #00d4aa;
-      --accent2:      #4f8ef7;
-      --accent3:      #f97316;
-      --text:         #e8edf5;
-      --text-muted:   #7a8ba3;
-      --shadow:       0 8px 32px rgba(0,0,0,0.45);
-      --radius:       18px;
-    }
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  color-scheme:light dark;
+  --bg:#f3f0ea;--surface:#fbfaf7;--tonal:#e9e5db;--outline:#d8d2c4;
+  --ink:#26302f;--ink2:#556160;--ink3:#76827f;
+  --primary:#3f6b6e;--primary-c:#d4e4e2;--on-primary:#fff;--birch:#c8ac61;
+  --ok:#2e7d4f;--bad:#b3261e;
+  --sky:#e6e1d4;--hill1:#cdd6cb;--hill2:#a9bcb4;--hill3:#7b9a98;--hill4:#3f6b6e;--cloud:#fbfaf7;
+  --e1:0 1px 2px rgba(38,48,47,.10),0 1px 3px rgba(38,48,47,.07);
+  --e2:0 2px 6px rgba(38,48,47,.12),0 10px 24px rgba(38,48,47,.08);
+  --e3:0 8px 16px rgba(38,48,47,.16),0 24px 48px rgba(38,48,47,.14);
+  --font:'Albert Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --mono:'DM Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --ease:cubic-bezier(.2,0,0,1);
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#1a2120;--surface:#232b2a;--tonal:#2c3635;--outline:#3b4846;
+  --ink:#e8ece9;--ink2:#b2bdba;--ink3:#8a9794;
+  --primary:#8fc1c3;--primary-c:#2f4b4d;--on-primary:#12302f;
+  --ok:#7fd4a0;--bad:#f2a29b;
+  --sky:#2a3433;--hill1:#33403e;--hill2:#3d4f4c;--hill3:#4b6764;--hill4:#6f9c9b;--cloud:#3a4846;
+  --e1:0 1px 2px rgba(0,0,0,.45);--e2:0 4px 16px rgba(0,0,0,.45);--e3:0 16px 48px rgba(0,0,0,.6);
+}}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased;min-height:100vh}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit}
+:focus-visible{outline:3px solid var(--primary);outline-offset:3px;border-radius:10px}
+.ms{font-family:'Material Symbols Rounded';font-weight:400;font-style:normal;font-size:24px;line-height:1;display:inline-block;letter-spacing:normal;white-space:nowrap;font-feature-settings:'liga';user-select:none;flex-shrink:0}
+.wrap{max-width:1120px;margin:0 auto;padding:0 clamp(16px,4vw,32px)}
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
+/* App bar */
+.appbar{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--outline)}
+.appbar .wrap{display:flex;align-items:center;gap:16px;height:64px}
+.brand{display:flex;align-items:center;gap:12px;font-weight:700;font-size:17px;letter-spacing:-.01em}
+.brand-mark{width:36px;height:36px;border-radius:12px;background:var(--primary);color:var(--on-primary);display:grid;place-items:center}
+.brand-mark .ms{font-size:22px}
+.appbar .btn{margin-left:auto}
 
-    body {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
+.btn{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 20px;border-radius:20px;font:600 14px var(--font);border:0;cursor:pointer;transition:box-shadow .2s var(--ease),transform .2s,background .2s}
+.btn .ms{font-size:20px}
+.btn-filled{background:var(--primary);color:var(--on-primary)}
+.btn-filled:hover{box-shadow:var(--e2)}
+.btn-tonal{background:var(--primary-c);color:var(--ink)}
+.btn-tonal:hover{box-shadow:var(--e1)}
+.btn-text{background:transparent;color:var(--primary)}
+.btn-text:hover{background:var(--primary-c)}
 
-    body::before {
-      content: '';
-      position: fixed; inset: 0; z-index: 0;
-      background:
-        radial-gradient(ellipse 80% 60% at 10% 20%, rgba(79,142,247,0.12) 0%, transparent 60%),
-        radial-gradient(ellipse 60% 50% at 90% 80%, rgba(0,212,170,0.10) 0%, transparent 55%),
-        radial-gradient(ellipse 50% 40% at 50% 50%, rgba(249,115,22,0.05) 0%, transparent 60%);
-      pointer-events: none;
-    }
+/* Hero */
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(20px,5vw,56px);align-items:center;padding:clamp(28px,5vw,56px) 0 32px}
+.hero h1{font-size:clamp(36px,5.5vw,56px);line-height:1.04;font-weight:800;letter-spacing:-.035em}
+.hero p{margin-top:16px;font-size:18px;color:var(--ink2);max-width:44ch}
+.scene{border-radius:28px;overflow:hidden;box-shadow:var(--e1);background:var(--sky);aspect-ratio:16/10}
+.scene svg{display:block;width:100%;height:100%}
+.up{animation:lift 2.4s var(--ease) .3s both}
+@keyframes lift{from{transform:translateY(34px);opacity:0}to{transform:none;opacity:1}}
 
-    .particles { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
-    .particle {
-      position: absolute; border-radius: 50%; opacity: 0;
-      animation: float-up linear infinite;
-    }
-    @keyframes float-up {
-      0%   { transform: translateY(110vh) scale(0); opacity: 0; }
-      10%  { opacity: 0.6; }
-      90%  { opacity: 0.3; }
-      100% { transform: translateY(-10vh) scale(1); opacity: 0; }
-    }
+/* Toolbar */
+.toolbar{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:24px}
+.search{flex:1;min-width:240px;max-width:560px;display:flex;align-items:center;gap:12px;height:56px;padding:0 8px 0 20px;background:var(--surface);border-radius:28px;box-shadow:var(--e1);border:1px solid transparent;transition:box-shadow .25s var(--ease),border-color .25s}
+.search:hover{box-shadow:var(--e2)}
+.search:focus-within{box-shadow:var(--e2);border-color:var(--primary)}
+.search .ms{color:var(--ink3)}
+.search input{flex:1;min-width:0;height:100%;background:none;border:0;outline:0;font:500 16px var(--font);color:var(--ink)}
+.search input::placeholder{color:var(--ink3)}
+.clear{width:40px;height:40px;border-radius:50%;border:0;background:none;color:var(--ink3);cursor:pointer;display:none;place-items:center}
+.clear:hover{background:var(--tonal)}
+.search.has-text .clear{display:grid}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 14px;border-radius:16px;background:var(--tonal);font-size:13px;font-weight:500;color:var(--ink2)}
+.chip b{color:var(--ink);font-weight:700}
 
-    /* ─────────────────────────────────────────
-       REDIRECT OVERLAY
-    ───────────────────────────────────────── */
-    #redirect-overlay {
-      display: none;
-      position: fixed; inset: 0; z-index: 100;
-      align-items: center; justify-content: center;
-      flex-direction: column;
-      background: var(--bg);
-    }
-    #redirect-overlay.active { display: flex; }
+/* Cards */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.card{position:relative;display:flex;flex-direction:column;gap:16px;padding:20px;background:var(--surface);border-radius:20px;box-shadow:var(--e1);overflow:hidden;cursor:pointer;transition:box-shadow .3s var(--ease),transform .3s var(--ease);animation:in .5s var(--ease) backwards;animation-delay:calc(var(--i) * 35ms)}
+.card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--accent)}
+.card:hover{box-shadow:var(--e3);transform:translateY(-4px)}
+.card:active{transform:translateY(-1px)}
+.card.hidden{display:none}
+@keyframes in{from{opacity:0;transform:translateY(12px)}}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.fav{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb,var(--accent) 13%,var(--surface));border:1px solid color-mix(in srgb,var(--accent) 28%,transparent);flex-shrink:0}
+.fav img{width:30px;height:30px;object-fit:contain}
+.fav .ms{color:var(--accent);font-size:26px;font-variation-settings:'FILL' 1}
+.fav.loading{animation:pulse 1.2s ease infinite}
+@keyframes pulse{50%{opacity:.45}}
+.card h3{font-size:18px;font-weight:700;letter-spacing:-.01em;line-height:1.2}
+.host{font:400 12.5px var(--mono);color:var(--ink3);margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.foot{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:auto}
+.tag{font-size:12.5px;font-weight:600;padding:4px 12px;border-radius:12px;background:color-mix(in srgb,var(--accent) 13%,transparent);color:var(--ink)}
+.arrow{color:var(--ink3);transition:transform .3s var(--ease),color .2s}
+.card:hover .arrow{transform:translate(3px,-3px);color:var(--accent)}
 
-    .redir-card {
-      position: relative;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 24px;
-      padding: 48px 52px 40px;
-      text-align: center;
-      max-width: 400px; width: 90%;
-      animation: fade-down 0.5s ease both;
-      overflow: hidden;
-    }
-    .redir-card::after {
-      content: '';
-      position: absolute; top: 0; left: 15%; right: 15%; height: 1px;
-      background: linear-gradient(90deg, transparent, var(--redir-accent, var(--accent)), transparent);
-    }
+.st{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:3px 10px 3px 8px;border-radius:12px;color:var(--c,var(--ink3));background:color-mix(in srgb,var(--c,var(--ink3)) 13%,transparent)}
+.st i{width:7px;height:7px;border-radius:50%;background:currentColor}
+.st.checking i{animation:pulse 1.2s ease infinite}
+.st.online{--c:var(--ok)}
+.st.offline{--c:var(--bad)}
 
-    .redir-icon-wrap {
-      width: 72px; height: 72px; border-radius: 20px;
-      display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 20px;
-    }
-    .redir-icon-wrap .material-symbols-rounded {
-      font-size: 34px; color: #fff;
-      font-variation-settings: 'FILL' 1;
-    }
+.ripple{position:absolute;border-radius:50%;background:color-mix(in srgb,var(--accent) 22%,transparent);transform:scale(0);animation:rip .6s var(--ease);pointer-events:none}
+@keyframes rip{to{transform:scale(4);opacity:0}}
 
-    .redir-tag {
-      font-size: 10px; font-weight: 700; letter-spacing: 0.16em;
-      text-transform: uppercase; color: var(--redir-accent, var(--accent));
-      margin-bottom: 8px;
-    }
-    .redir-title {
-      font-family: 'DM Serif Display', serif;
-      font-size: 1.7rem; line-height: 1.15;
-      margin-bottom: 6px;
-    }
-    .redir-domain {
-      font-size: 0.78rem; color: var(--text-muted);
-      margin-bottom: 32px;
-    }
+.empty{display:none;text-align:center;padding:56px 16px;color:var(--ink2)}
+.empty.show{display:block}
+.empty .ms{font-size:48px;color:var(--ink3)}
+.empty p{margin:8px 0 16px}
 
-    .redir-progress-track {
-      height: 3px; border-radius: 3px;
-      background: rgba(255,255,255,0.07);
-      overflow: hidden; margin-bottom: 14px;
-    }
-    .redir-progress-fill {
-      height: 100%; width: 0%; border-radius: 3px;
-      transition: width 2.4s cubic-bezier(0.4,0,0.2,1);
-    }
-    .redir-status {
-      font-size: 0.78rem; color: var(--text-muted);
-    }
-    .redir-cancel {
-      margin-top: 20px;
-      font-size: 0.75rem; color: var(--text-muted);
-      cursor: pointer; text-decoration: underline;
-      background: none; border: none; color: var(--text-muted);
-      font-family: inherit;
-    }
-    .redir-cancel:hover { color: var(--text); }
+footer{margin:56px 0 32px;text-align:center;font-size:13px;color:var(--ink3)}
 
-    /* ─────────────────────────────────────────
-       MAIN PORTAL (unchanged layout)
-    ───────────────────────────────────────── */
-    .wrapper {
-      position: relative; z-index: 1;
-      max-width: 1200px; margin: 0 auto;
-      padding: 0 24px 80px;
-    }
+/* Dialog */
+.scrim{position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(20,26,25,.5);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.scrim.active{display:flex;animation:fade .25s var(--ease)}
+@keyframes fade{from{opacity:0}}
+.dialog{width:100%;max-width:400px;background:var(--surface);border-radius:28px;box-shadow:var(--e3);padding:32px 28px 20px;text-align:center;animation:pop .35s var(--ease)}
+@keyframes pop{from{opacity:0;transform:scale(.92) translateY(12px)}}
+.dialog .fav{width:72px;height:72px;margin:0 auto 18px}
+.dialog .fav img{width:42px;height:42px}
+.dialog .fav .ms{font-size:36px}
+.d-tag{font-size:13px;font-weight:600;color:var(--accent)}
+.dialog h2{font-size:24px;font-weight:800;letter-spacing:-.02em;line-height:1.2;margin-top:2px}
+.d-host{font:400 13px var(--mono);color:var(--ink3);margin-top:4px}
+.track{height:4px;border-radius:2px;background:var(--tonal);overflow:hidden;margin:26px 0 12px}
+.fill{height:100%;width:0;border-radius:2px;background:var(--accent);transition:width 2.4s linear}
+.d-status{font-size:14px;color:var(--ink2)}
+.d-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:20px}
 
-    header {
-      padding: 56px 0 48px; text-align: center; position: relative;
-    }
-    .header-eyebrow {
-      display: inline-flex; align-items: center; gap: 8px;
-      font-size: 11px; font-weight: 600; letter-spacing: 0.18em;
-      text-transform: uppercase; color: var(--accent);
-      background: rgba(0,212,170,0.10); border: 1px solid rgba(0,212,170,0.25);
-      padding: 6px 16px; border-radius: 100px; margin-bottom: 24px;
-      animation: fade-down 0.6s ease both;
-    }
-    .header-eyebrow .material-symbols-rounded { font-size: 14px; }
-
-    h1 {
-      font-family: 'DM Serif Display', serif;
-      font-size: clamp(2.4rem, 5vw, 4rem);
-      line-height: 1.1; letter-spacing: -0.02em; color: var(--text);
-      animation: fade-down 0.7s 0.1s ease both;
-    }
-    h1 em {
-      font-style: italic;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-    }
-    .subtitle {
-      margin-top: 16px; font-size: 1rem; color: var(--text-muted); font-weight: 400;
-      animation: fade-down 0.7s 0.2s ease both;
-    }
-
-    .search-wrap {
-      display: flex; justify-content: center;
-      margin: 36px 0 48px; animation: fade-down 0.7s 0.3s ease both;
-    }
-    .search-box {
-      display: flex; align-items: center; gap: 10px;
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 100px; padding: 10px 20px;
-      width: 100%; max-width: 420px;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-    .search-box:focus-within {
-      border-color: rgba(0,212,170,0.5);
-      box-shadow: 0 0 0 3px rgba(0,212,170,0.10);
-    }
-    .search-box .material-symbols-rounded { color: var(--text-muted); font-size: 20px; }
-    .search-box input {
-      flex: 1; background: none; border: none; outline: none;
-      font-family: inherit; font-size: 0.9rem; color: var(--text);
-    }
-    .search-box input::placeholder { color: var(--text-muted); }
-
-    .stats {
-      display: flex; justify-content: center; gap: 40px;
-      margin-bottom: 48px; animation: fade-down 0.7s 0.35s ease both;
-    }
-    .stat { text-align: center; }
-    .stat-num { font-size: 1.6rem; font-weight: 700; color: var(--accent); }
-    .stat-lbl { font-size: 0.75rem; color: var(--text-muted); letter-spacing: 0.05em; text-transform: uppercase; margin-top: 2px; }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 20px;
-    }
-
-    .card {
-      position: relative;
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 28px 24px 22px;
-      text-decoration: none; color: inherit;
-      display: flex; flex-direction: column; gap: 14px;
-      overflow: hidden;
-      transition: transform 0.25s cubic-bezier(.34,1.56,.64,1),
-                  border-color 0.25s, box-shadow 0.25s;
-      animation: card-in 0.6s ease both;
-      cursor: pointer;
-    }
-    .card:hover {
-      transform: translateY(-6px) scale(1.01);
-      border-color: var(--card-accent, var(--accent));
-      box-shadow: 0 20px 48px rgba(0,0,0,0.5),
-                  0 0 0 1px var(--card-accent, var(--accent)),
-                  inset 0 1px 0 rgba(255,255,255,0.06);
-    }
-    .card::before {
-      content: ''; position: absolute; inset: 0; border-radius: inherit;
-      background: radial-gradient(circle at var(--mx,50%) var(--my,50%),
-        rgba(255,255,255,0.04) 0%, transparent 65%);
-      transition: opacity 0.3s; opacity: 0; pointer-events: none;
-    }
-    .card:hover::before { opacity: 1; }
-    .card::after {
-      content: ''; position: absolute; top: 0; left: 10%; right: 10%; height: 1px;
-      background: linear-gradient(90deg, transparent, var(--card-accent, var(--accent)), transparent);
-      opacity: 0; transition: opacity 0.25s;
-    }
-    .card:hover::after { opacity: 0.8; }
-
-    .card.placeholder {
-      border-style: dashed; opacity: 0.45; pointer-events: none;
-      justify-content: center; align-items: center; min-height: 140px;
-    }
-    .card.placeholder .placeholder-inner {
-      display: flex; flex-direction: column; align-items: center; gap: 8px;
-      color: var(--text-muted); font-size: 0.85rem;
-    }
-
-    .card-icon-wrap {
-      width: 48px; height: 48px; border-radius: 14px;
-      display: flex; align-items: center; justify-content: center;
-      background: var(--card-icon-bg, rgba(0,212,170,0.12)); flex-shrink: 0;
-    }
-    .card-icon-wrap .material-symbols-rounded {
-      font-size: 26px; color: var(--card-accent, var(--accent));
-      font-variation-settings: 'FILL' 1;
-    }
-
-    .card-meta { flex: 1; }
-    .card-index {
-      font-size: 10px; font-weight: 700; letter-spacing: 0.15em;
-      text-transform: uppercase; color: var(--card-accent, var(--accent));
-      opacity: 0.7; margin-bottom: 4px;
-    }
-    .card-title { font-size: 1.05rem; font-weight: 600; color: var(--text); margin-bottom: 4px; line-height: 1.3; }
-    .card-domain { font-size: 0.78rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-    .card-footer {
-      display: flex; align-items: center; justify-content: space-between;
-      border-top: 1px solid var(--border); padding-top: 14px; margin-top: 4px;
-    }
-    .card-tag {
-      font-size: 10px; font-weight: 600; letter-spacing: 0.1em;
-      text-transform: uppercase; padding: 3px 10px; border-radius: 100px;
-      background: var(--card-tag-bg, rgba(0,212,170,0.12));
-      color: var(--card-accent, var(--accent));
-    }
-    .card-arrow .material-symbols-rounded {
-      font-size: 18px; color: var(--text-muted);
-      transition: color 0.2s, transform 0.2s;
-    }
-    .card:hover .card-arrow .material-symbols-rounded {
-      color: var(--card-accent, var(--accent));
-      transform: translate(3px, -3px);
-    }
-
-    .status-badge {
-      display: inline-flex; align-items: center; gap: 5px;
-      font-size: 10px; font-weight: 600; letter-spacing: 0.08em;
-      text-transform: uppercase; padding: 3px 9px; border-radius: 100px;
-      transition: background 0.4s, color 0.4s;
-    }
-    .status-dot {
-      width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; transition: background 0.4s;
-    }
-    .status-badge.checking { background: rgba(122,139,163,0.15); color: #7a8ba3; }
-    .status-badge.checking .status-dot { background: #7a8ba3; animation: pulse-dot 1.2s ease-in-out infinite; }
-    .status-badge.online   { background: rgba(52,211,153,0.15);  color: #34d399; }
-    .status-badge.online   .status-dot { background: #34d399; box-shadow: 0 0 6px #34d399; animation: pulse-dot 2s ease-in-out infinite; }
-    .status-badge.offline  { background: rgba(244,63,94,0.13);   color: #f43f5e; }
-    .status-badge.offline  .status-dot { background: #f43f5e; }
-    @keyframes pulse-dot {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50%       { opacity: 0.5; transform: scale(0.7); }
-    }
-
-    .ripple {
-      position: absolute; border-radius: 50%;
-      background: rgba(255,255,255,0.15);
-      transform: scale(0); animation: ripple-anim 0.6s linear; pointer-events: none;
-    }
-    @keyframes ripple-anim { to { transform: scale(4); opacity: 0; } }
-
-    @keyframes fade-down {
-      from { opacity: 0; transform: translateY(-18px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes card-in {
-      from { opacity: 0; transform: translateY(30px) scale(0.96); }
-      to   { opacity: 1; transform: translateY(0)   scale(1); }
-    }
-
-    footer {
-      text-align: center; margin-top: 64px;
-      font-size: 0.78rem; color: var(--text-muted);
-      letter-spacing: 0.05em; position: relative; z-index: 1;
-    }
-    footer a { color: var(--accent); text-decoration: none; }
-
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: var(--bg); }
-    ::-webkit-scrollbar-thumb { background: var(--surface2); border-radius: 3px; }
-
-    .card.hidden { display: none; }
-
-    @media (max-width: 600px) {
-      .stats { gap: 24px; }
-      .stat-num { font-size: 1.2rem; }
-      .redir-card { padding: 36px 28px 32px; }
-    }
-  </style>
+@media(max-width:760px){
+  .hero{grid-template-columns:1fr}
+  .scene{order:-1;aspect-ratio:2/1}
+}
+@media(max-width:520px){
+  .grid{grid-template-columns:1fr}
+  .hero p{font-size:16px}
+  .appbar .btn span.t{display:none}
+  .appbar .btn{padding:0 12px}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
+</style>
 </head>
 <body>
 
-<div class="particles" id="particles"></div>
-
-<!-- ── Redirect overlay ── -->
-<div id="redirect-overlay">
-  <div class="redir-card" id="redirCard">
-    <div class="redir-icon-wrap" id="redirIconWrap">
-      <span class="material-symbols-rounded" id="redirIconName">upload</span>
-    </div>
-    <div class="redir-tag" id="redirTag">—</div>
-    <div class="redir-title" id="redirTitle">Upload Portal</div>
-    <div class="redir-domain" id="redirDomain">—</div>
-    <div class="redir-progress-track">
-      <div class="redir-progress-fill" id="redirProgress"></div>
-    </div>
-    <div class="redir-status">Redirecting in 2 seconds…</div>
-    <button class="redir-cancel" onclick="cancelRedirect()">Cancel</button>
+<header class="appbar">
+  <div class="wrap">
+    <div class="brand"><span class="brand-mark"><span class="ms" aria-hidden="true">cloud_upload</span></span>Meson Systematics</div>
+    <a class="btn btn-tonal" href="mailto:june@meson.one"><span class="ms" aria-hidden="true">mail</span><span class="t">Need help?</span></a>
   </div>
-</div>
+</header>
 
-<!-- ── Main portal ── -->
-<div class="wrapper" id="mainPortal">
-  <header>
-    <div class="header-eyebrow">
-      <span class="material-symbols-rounded">cloud_upload</span>
-      Secure File Transfer
+<main class="wrap">
+  <section class="hero">
+    <div>
+      <h1>Upload portal</h1>
+      <p>Choose a destination and send your files straight to the right cloud.</p>
     </div>
-    <h1>Upload <em>Portal</em></h1>
-    <p class="subtitle">Select a destination to securely upload your files</p>
-  </header>
+    <div class="scene" aria-hidden="true">
+      <svg viewBox="0 0 640 400" preserveAspectRatio="xMidYMid slice">
+        <circle cx="500" cy="120" r="46" fill="var(--birch)"/>
+        <path d="M0 250 Q100 180 210 235 T410 215 T640 240 V400 H0Z" fill="var(--hill1)"/>
+        <path d="M0 290 Q130 235 260 280 T500 265 T640 290 V400 H0Z" fill="var(--hill2)"/>
+        <path d="M0 330 Q160 285 320 325 T640 320 V400 H0Z" fill="var(--hill3)"/>
+        <path d="M0 365 Q180 335 340 362 T640 355 V400 H0Z" fill="var(--hill4)"/>
+        <g class="up">
+          <g fill="var(--cloud)"><rect x="200" y="96" width="220" height="62" rx="31"/><rect x="250" y="62" width="100" height="70" rx="35"/><rect x="316" y="76" width="70" height="56" rx="28"/></g>
+          <path d="M310 150 V102 M290 120 L310 100 L330 120" fill="none" stroke="var(--primary)" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+        </g>
+        <g fill="var(--cloud)" opacity=".8"><rect x="70" y="70" width="90" height="20" rx="10"/><rect x="470" y="200" width="80" height="18" rx="9"/></g>
+      </svg>
+    </div>
+  </section>
 
-  <div class="search-wrap">
-    <div class="search-box">
-      <span class="material-symbols-rounded">search</span>
-      <input type="text" id="search" placeholder="Filter upload destinations…" autocomplete="off"/>
-    </div>
-  </div>
-
-  <div class="stats">
-    <div class="stat">
-      <div class="stat-num" id="stat-total">12</div>
-      <div class="stat-lbl">Destinations</div>
-    </div>
-    <div class="stat">
-      <div class="stat-num" id="stat-visible">12</div>
-      <div class="stat-lbl">Visible</div>
-    </div>
-    <div class="stat">
-      <div class="stat-num" id="stat-online"><span style="font-size:1rem;color:#7a8ba3">—</span></div>
-      <div class="stat-lbl">Online</div>
+  <div class="toolbar">
+    <label class="search" id="searchBox">
+      <span class="ms" aria-hidden="true">search</span>
+      <input type="search" id="search" placeholder="Search destinations" autocomplete="off" aria-label="Search destinations">
+      <button class="clear" id="clear" type="button" aria-label="Clear search"><span class="ms" aria-hidden="true">close</span></button>
+    </label>
+    <div class="chips" aria-live="polite">
+      <span class="chip">Showing <b id="stat-visible">0</b> of <b id="stat-total">0</b></span>
+      <span class="chip">Online <b id="stat-online">checking</b></span>
     </div>
   </div>
 
   <div class="grid" id="grid"></div>
+
+  <div class="empty" id="empty">
+    <span class="ms" aria-hidden="true">search_off</span>
+    <p>No destinations match your search.</p>
+    <button class="btn btn-tonal" type="button" id="reset">Clear search</button>
+  </div>
+</main>
+
+<footer>&copy; <span id="yr"></span> Meson Systematics. All transfers are encrypted.</footer>
+
+<div class="scrim" id="overlay" role="dialog" aria-modal="true" aria-labelledby="dTitle">
+  <div class="dialog" id="dialog">
+    <div class="fav" id="dFav"></div>
+    <div class="d-tag" id="dTag"></div>
+    <h2 id="dTitle"></h2>
+    <div class="d-host" id="dHost"></div>
+    <div class="track"><div class="fill" id="dFill"></div></div>
+    <div class="d-status">Redirecting in 2 seconds&hellip;</div>
+    <div class="d-actions">
+      <button class="btn btn-text" type="button" id="dCancel">Cancel</button>
+      <button class="btn btn-filled" type="button" id="dGo">Go now</button>
+    </div>
+  </div>
 </div>
 
-<footer>
-  &copy; <span id="yr"></span> &mdash; Secure Upload Portal &middot; All transfers encrypted
-</footer>
-
 <script>
-  // ── Data ──
-  const links = [
-    { title: "HMS Upload",     domain: "hms.meson.in",   url: "https://hms.meson.in/s/2DSWKijZ85jNJGL",            icon: "local_hospital",  accent: "#B80B0B", tag: "Medical School"      },
-    { title: "MGH Upload",     domain: "mgh.meson.in",   url: "https://mgh.meson.in/s/4fbRjoPJc79Hfdz",            icon: "medical_services", accent: "#008BB0", tag: "General Hospital"    },
-    { title: "NUS Upload",     domain: "nus.meson.in",   url: "https://nus.meson.in/s/zrQnJawN2qNQk8i",            icon: "school",           accent: "#EF7C00", tag: "Academic Activity"   },
-    { title: "Broad Upload",   domain: "broad.meson.in", url: "https://broad.meson.in/s/CW9CYrypQfzgA6e",          icon: "biotech",          accent: "#015F9D", tag: "Research Institute"  },
-    { title: "Cloud Upload",   domain: "cloud.onni.me",  url: "https://cloud.onni.me/s/2embnWfNNK2iDa4",           icon: "cloud_upload",     accent: "#003876", tag: "Personal Clouds"     },
-    { title: "Box Upload",     domain: "box.meson.in",   url: "https://box.meson.in/s/WppmxjtXYg9Lko6",            icon: "inventory_2",      accent: "#009CA6", tag: "Medical Informatics" },
-    { title: "DNA Upload",     domain: "dna.meson.in",   url: "https://dna.meson.in/s/n2pc4i8F553ZcYy",            icon: "genetics",         accent: "#6E6F71", tag: "Genomic Analysis"    },
-    { title: "Air Upload",     domain: "air.meson.in",   url: "https://air.meson.in/s/SyKLy5bkngAfwd2",            icon: "air",              accent: "#99C8A8", tag: "Transfer Platform"   },
-    { title: "Sync Upload",    domain: "sync.meson.in",  url: "https://sync.meson.in/s/FkMekqBcWwmn6dH",           icon: "sync",             accent: "#818cf8", tag: "Sync Gateway"        },
-    { title: "Chau Upload",    domain: "chau.onni.me",   url: "https://chau.onni.me/s/jxdscR2n7mnPMBq",            icon: "folder_shared",    accent: "#ddcb55", tag: "Private Sharing"     },
-    { title: "Halo Upload",    domain: "halo.meson.in",  url: "https://halo.meson.in/s/LS6YiW5AnxKmaKG",           icon: "hub",              accent: "#5B64B3", tag: "Backend Workaround"  },
-    { title: "Dropbox Upload", domain: "dropbox.com",    url: "https://www.dropbox.com/request/xKRshoaU0F5bafu4VtWh", icon: "folder_zip",    accent: "#0061ff", tag: "Dropbox"             },
-  ];
+/* fv = Nextcloud theming version, same values as the cloud portal. No fv = Material icon only. */
+const links=[
+  {title:'HMS Upload',    domain:'hms.meson.in',   url:'https://hms.meson.in/s/2DSWKijZ85jNJGL',   fv:'a7e9b885',accent:'#B80B0B',icon:'local_hospital',  tag:'Medical School'},
+  {title:'MGH Upload',    domain:'mgh.meson.in',   url:'https://mgh.meson.in/s/4fbRjoPJc79Hfdz',   fv:'ca7c0552',accent:'#008BB0',icon:'medical_services',tag:'General Hospital'},
+  {title:'NUS Upload',    domain:'nus.meson.in',   url:'https://nus.meson.in/s/zrQnJawN2qNQk8i',   fv:'afd34149',accent:'#EF7C00',icon:'school',          tag:'Academic Activity'},
+  {title:'Broad Upload',  domain:'broad.meson.in', url:'https://broad.meson.in/s/CW9CYrypQfzgA6e', fv:'ad628b33',accent:'#015F9D',icon:'biotech',         tag:'Research Institute'},
+  {title:'Cloud Upload',  domain:'cloud.onni.me',  url:'https://cloud.onni.me/s/2embnWfNNK2iDa4',  fv:'8d8d50a0',accent:'#003876',icon:'cloud_upload',    tag:'Personal Clouds'},
+  {title:'Box Upload',    domain:'box.meson.in',   url:'https://box.meson.in/s/WppmxjtXYg9Lko6',   fv:'69876059',accent:'#009CA6',icon:'inventory_2',     tag:'Medical Informatics'},
+  {title:'DNA Upload',    domain:'dna.meson.in',   url:'https://dna.meson.in/s/n2pc4i8F553ZcYy',   fv:'7f1116fd',accent:'#6E6F71',icon:'genetics',        tag:'Genomic Analysis'},
+  {title:'Air Upload',    domain:'air.meson.in',   url:'https://air.meson.in/s/SyKLy5bkngAfwd2',   fv:'5e6c9b7e',accent:'#6FA583',icon:'air',             tag:'Transfer Platform'},
+  {title:'Sync Upload',   domain:'sync.meson.in',  url:'https://sync.meson.in/s/FkMekqBcWwmn6dH',  fv:'5e6c9b7e',accent:'#794E44',icon:'sync',            tag:'Sync Gateway'},
+  {title:'Chau Upload',   domain:'chau.onni.me',   url:'https://chau.onni.me/s/jxdscR2n7mnPMBq',   fv:'a8307d25',accent:'#C2AE2E',icon:'folder_shared',   tag:'Private Sharing'},
+  {title:'Halo Upload',   domain:'halo.meson.in',  url:'https://halo.meson.in/s/LS6YiW5AnxKmaKG',  fv:'5b9cc373',accent:'#5B64B3',icon:'hub',             tag:'Backend Workaround'},
+  {title:'Dropbox Upload',domain:'dropbox.com',    url:'https://www.dropbox.com/request/xKRshoaU0F5bafu4VtWh',accent:'#0061ff',icon:'folder_zip',tag:'Dropbox'}
+];
 
-  // ─────────────────────────────────────────
-  // REDIRECT LOGIC (?domain= param)
-  // ─────────────────────────────────────────
-  let redirectTimer = null;
+const $=id=>document.getElementById(id);
+function el(tag,cls,text){const e=document.createElement(tag);if(cls)e.className=cls;if(text!==undefined)e.textContent=text;return e}
+function icon(name){const s=el('span','ms',name);s.setAttribute('aria-hidden','true');return s}
 
-  function hexToRgba(hex, alpha) {
-    const r = parseInt(hex.slice(1,3),16);
-    const g = parseInt(hex.slice(3,5),16);
-    const b = parseInt(hex.slice(5,7),16);
-    return `rgba(${r},${g},${b},${alpha})`;
-  }
+/* Favicon from the Nextcloud theming endpoint; Material icon as fallback */
+function favicon(item,size){
+  const box=el('div','fav');
+  box.style.setProperty('--accent',item.accent);
+  if(!item.fv){box.append(icon(item.icon));return box}
+  box.classList.add('loading');
+  const img=new Image();
+  img.alt='';img.width=size;img.height=size;
+  img.onload=()=>{box.classList.remove('loading');box.replaceChildren(img)};
+  img.onerror=()=>{box.classList.remove('loading');box.replaceChildren(icon(item.icon))};
+  img.src=`https://${item.domain}/apps/theming/favicon?v=${item.fv}`;
+  return box;
+}
 
-  function cancelRedirect() {
-    clearTimeout(redirectTimer);
-    redirectTimer = null;
-    document.getElementById('redirect-overlay').classList.remove('active');
-    // clean the URL without reload
-    history.replaceState(null, '', location.pathname);
-  }
+/* Redirect dialog (?d=domain) */
+let timer=null,current=null;
+function closeDialog(){
+  clearTimeout(timer);timer=null;current=null;
+  $('overlay').classList.remove('active');
+  if(location.search)history.replaceState(null,'',location.pathname);
+}
+function openDialog(item){
+  current=item;
+  const ov=$('overlay');
+  ov.style.setProperty('--accent',item.accent);
+  $('dialog').style.setProperty('--accent',item.accent);
+  $('dFav').replaceWith(Object.assign(favicon(item,42),{id:'dFav'}));
+  $('dTag').textContent=item.tag;
+  $('dTitle').textContent=item.title;
+  $('dHost').textContent=item.domain;
+  const fill=$('dFill');
+  fill.style.background=item.accent;
+  fill.style.transition='none';fill.style.width='0';
+  ov.classList.add('active');
+  $('dCancel').focus();
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{fill.style.transition='';fill.style.width='100%'}));
+  clearTimeout(timer);
+  timer=setTimeout(()=>{location.href=item.url},2500);
+}
+$('dCancel').onclick=closeDialog;
+$('dGo').onclick=()=>{if(current)location.href=current.url};
+$('overlay').addEventListener('click',e=>{if(e.target===e.currentTarget)closeDialog()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&current)closeDialog()});
+function fromQuery(){
+  const d=(new URLSearchParams(location.search).get('d')||'').toLowerCase().trim();
+  const m=links.find(l=>l.domain.toLowerCase()===d);
+  if(m)openDialog(m);else if(current){clearTimeout(timer);current=null;$('overlay').classList.remove('active')}
+}
+window.addEventListener('popstate',fromQuery);
 
-  function triggerRedirect(item) {
-    const overlay   = document.getElementById('redirect-overlay');
-    const iconWrap  = document.getElementById('redirIconWrap');
-    const progress  = document.getElementById('redirProgress');
+/* Cards */
+const grid=$('grid');
+links.forEach((item,i)=>{
+  const a=el('a','card');
+  a.href='?d='+item.domain;
+  a.style.setProperty('--accent',item.accent);
+  a.style.setProperty('--i',i);
+  a.dataset.q=(item.title+' '+item.domain+' '+item.tag).toLowerCase();
 
-    document.getElementById('redirIconName').textContent = item.icon;
-    document.getElementById('redirIconName').style.fontVariationSettings = "'FILL' 1";
-    document.getElementById('redirTag').textContent      = item.tag;
-    document.getElementById('redirTitle').textContent    = item.title;
-    document.getElementById('redirDomain').textContent   = item.domain;
+  const st=el('span','st checking');st.id='st-'+i;
+  st.append(el('i'),el('span','','Checking'));
+  const top=el('div','top');top.append(favicon(item,30),st);
 
-    iconWrap.style.background = hexToRgba(item.accent, 0.18);
-    iconWrap.style.boxShadow  = `0 0 32px ${hexToRgba(item.accent, 0.3)}`;
+  const info=el('div');
+  info.append(el('h3','',item.title),el('div','host',item.domain));
 
-    // Card top shimmer uses CSS var
-    document.getElementById('redirCard').style.setProperty('--redir-accent', item.accent);
+  const foot=el('div','foot');
+  const arrow=icon('arrow_outward');arrow.classList.add('arrow');
+  foot.append(el('span','tag',item.tag),arrow);
 
-    progress.style.background = `linear-gradient(90deg, ${hexToRgba(item.accent,0.5)}, ${item.accent})`;
-    progress.style.width = '0%';
+  a.append(top,info,foot);
 
-    overlay.classList.add('active');
-
-    // Animate progress bar next frame
-    requestAnimationFrame(() => requestAnimationFrame(() => {
-      progress.style.width = '100%';
-    }));
-
-    redirectTimer = setTimeout(() => {
-      window.location.href = item.url;
-    }, 2500);
-  }
-
-  // Check for ?domain= on load
-  (function() {
-    const param = new URLSearchParams(location.search).get('d');
-    if (!param) return;
-    const match = links.find(l => l.domain.toLowerCase() === param.toLowerCase().trim());
-    if (match) triggerRedirect(match);
-    // If no match: silently show the portal as normal (unknown domain)
-  })();
-
-  // ─────────────────────────────────────────
-  // RENDER CARDS
-  // ─────────────────────────────────────────
-  const grid = document.getElementById('grid');
-
-  links.forEach((item, i) => {
-    const delay = (i * 60) + 'ms';
-
-    const a = document.createElement('a');
-    a.className = 'card';
-    // Card click → show redirect overlay instead of navigating directly
-    a.href = '?d=' + item.domain;
-    a.dataset.title  = item.title.toLowerCase();
-    a.dataset.domain = item.domain.toLowerCase();
-    a.dataset.tag    = item.tag.toLowerCase();
-    a.style.setProperty('--card-accent',   item.accent);
-    a.style.setProperty('--card-icon-bg',  item.accent + '18');
-    a.style.setProperty('--card-tag-bg',   item.accent + '18');
-    a.style.animationDelay = delay;
-
-    a.innerHTML = `
-      <div style="display:flex;align-items:flex-start;gap:16px;">
-        <div class="card-icon-wrap">
-          <span class="material-symbols-rounded">${item.icon}</span>
-        </div>
-        <div class="card-meta">
-          <div class="card-index">Upload #${String(i+1).padStart(2,'0')}</div>
-          <div class="card-title">${item.title}</div>
-          <div class="card-domain">${item.domain}</div>
-        </div>
-      </div>
-      <div class="card-footer">
-        <span class="card-tag">${item.tag}</span>
-        <span class="status-badge checking" id="status-${i}">
-          <span class="status-dot"></span>
-          <span class="status-text">Checking…</span>
-        </span>
-        <span class="card-arrow"><span class="material-symbols-rounded">arrow_outward</span></span>
-      </div>`;
-
-    // Intercept click → overlay (not full navigation)
-    a.addEventListener('click', function(e) {
-      e.preventDefault();
-      // Ripple
-      const r = document.createElement('span');
-      r.className = 'ripple';
-      const rect = this.getBoundingClientRect();
-      const size = Math.max(rect.width, rect.height);
-      r.style.cssText = `width:${size}px;height:${size}px;left:${e.clientX-rect.left-size/2}px;top:${e.clientY-rect.top-size/2}px`;
-      this.appendChild(r);
-      setTimeout(() => r.remove(), 700);
-      // Update URL (shareable link) and trigger overlay
-      history.pushState(null, '', '?d=' + item.domain);
-      triggerRedirect(item);
-    });
-
-    // Mouse glow
-    a.addEventListener('mousemove', function(e) {
-      const rect = this.getBoundingClientRect();
-      this.style.setProperty('--mx', ((e.clientX - rect.left) / rect.width * 100) + '%');
-      this.style.setProperty('--my', ((e.clientY - rect.top) / rect.height * 100) + '%');
-    });
-
-    grid.appendChild(a);
+  a.addEventListener('click',e=>{
+    e.preventDefault();
+    const r=el('span','ripple'),b=a.getBoundingClientRect(),s=Math.max(b.width,b.height);
+    r.style.cssText=`width:${s}px;height:${s}px;left:${e.clientX-b.left-s/2}px;top:${e.clientY-b.top-s/2}px`;
+    a.appendChild(r);setTimeout(()=>r.remove(),700);
+    history.pushState(null,'','?d='+item.domain);
+    openDialog(item);
   });
+  grid.appendChild(a);
+});
 
-  // ─────────────────────────────────────────
-  // STATUS CHECKING
-  // ─────────────────────────────────────────
-  let onlineCount = 0, checkedCount = 0;
-  const totalLinks = links.length;
-
-  function updateOnlineStat() {
-    checkedCount++;
-    document.getElementById('stat-online').textContent = onlineCount + '/' + totalLinks;
+/* Status checks */
+let online=0,done=0;
+async function check(item,i){
+  const badge=$('st-'+i),text=badge.lastChild;
+  const ctl=new AbortController(),to=setTimeout(()=>ctl.abort(),8000);
+  try{
+    await fetch(item.url,{method:'HEAD',mode:'no-cors',signal:ctl.signal});
+    badge.className='st online';text.textContent='Online';online++;
+  }catch(e){
+    badge.className='st offline';text.textContent=e.name==='AbortError'?'Timeout':'Offline';
   }
+  clearTimeout(to);done++;
+  $('stat-online').textContent=online+' of '+links.length;
+}
+links.forEach((item,i)=>setTimeout(()=>check(item,i),i*250));
 
-  async function checkStatus(url, index) {
-    const badge  = document.getElementById('status-' + index);
-    if (!badge) return;
-    const textEl = badge.querySelector('.status-text');
-    try {
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 8000);
-      await fetch(url, { method: 'HEAD', mode: 'no-cors', signal: controller.signal });
-      clearTimeout(timeout);
-      badge.className = 'status-badge online';
-      textEl.textContent = 'Online';
-      onlineCount++;
-    } catch (e) {
-      badge.className = 'status-badge offline';
-      textEl.textContent = e.name === 'AbortError' ? 'Timeout' : 'Offline';
-    }
-    updateOnlineStat();
-  }
+/* Search */
+const search=$('search'),cards=[...grid.children];
+$('stat-total').textContent=links.length;
+function filter(){
+  const q=search.value.toLowerCase().trim();let v=0;
+  cards.forEach(c=>{const m=!q||c.dataset.q.includes(q);c.classList.toggle('hidden',!m);if(m)v++});
+  $('stat-visible').textContent=v;
+  $('empty').classList.toggle('show',v===0);
+  $('searchBox').classList.toggle('has-text',!!search.value);
+}
+function reset(){search.value='';filter();search.focus()}
+search.addEventListener('input',filter);
+$('clear').onclick=reset;$('reset').onclick=reset;
+filter();
 
-  links.forEach((item, i) => {
-    if (item.url) setTimeout(() => checkStatus(item.url, i), i * 300);
-  });
-
-  // ─────────────────────────────────────────
-  // SEARCH / FILTER
-  // ─────────────────────────────────────────
-  const search      = document.getElementById('search');
-  const statVisible = document.getElementById('stat-visible');
-  document.getElementById('stat-total').textContent   = links.length;
-  document.getElementById('stat-visible').textContent = links.length;
-
-  search.addEventListener('input', () => {
-    const q = search.value.toLowerCase().trim();
-    const cards = grid.querySelectorAll('.card:not(.placeholder)');
-    let vis = 0;
-    cards.forEach(c => {
-      const match = !q || c.dataset.title.includes(q) || c.dataset.domain.includes(q) || c.dataset.tag.includes(q);
-      c.classList.toggle('hidden', !match);
-      if (match) vis++;
-    });
-    statVisible.textContent = vis;
-  });
-
-  // ─────────────────────────────────────────
-  // FLOATING PARTICLES
-  // ─────────────────────────────────────────
-  const container = document.getElementById('particles');
-  const colors = ['#00d4aa','#4f8ef7','#f97316','#a78bfa','#f43f5e'];
-  for (let i = 0; i < 28; i++) {
-    const p = document.createElement('div');
-    p.className = 'particle';
-    const size = Math.random() * 4 + 2;
-    p.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}%;background:${colors[Math.floor(Math.random()*colors.length)]};animation-duration:${12+Math.random()*16}s;animation-delay:${Math.random()*14}s;`;
-    container.appendChild(p);
-  }
-
-  document.getElementById('yr').textContent = new Date().getFullYear();
+$('yr').textContent=new Date().getFullYear();
+fromQuery();
 </script>
 </body>
 </html>
